@@ -18,7 +18,7 @@ public class CourseController {
         courses.add(new Course(1L,"Matma", "Liczby rzeczywiste"));
         courses.add(new Course(2L, "Biologia", "Człowiek"));
         courses.add(new Course(3L, "IT", "Prolog"));
-
+        courses.add(new Course(4L, "Chemia", "Pierwiastki chemiczne"));
         return courses;
     }
 
