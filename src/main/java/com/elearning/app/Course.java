@@ -1,14 +1,25 @@
 package com.elearning.app;
 
+import java.util.List;
+
 public class Course {
     private Long id;
     private String name;
     private String description;
+    private List<Lesson> lessons;
 
-    public Course (Long id, String name, String description) {
+    public Course(Long id, String name, String description) {
         this.id = id;
         this.name = name;
         this.description = description;
+    }
+
+    public List<Lesson> getLessons() {
+        return lessons;
+    }
+
+    public void setLessons(List<Lesson> lessons) {
+        this.lessons = lessons;
     }
 
     @Override
@@ -17,6 +28,7 @@ public class Course {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
+                ", lessons=" + lessons +
                 '}';
     }
 

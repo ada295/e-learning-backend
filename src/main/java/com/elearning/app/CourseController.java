@@ -19,6 +19,13 @@ public class CourseController {
         courses.add(new Course(2L, "Biologia", "Człowiek"));
         courses.add(new Course(3L, "IT", "Prolog"));
         courses.add(new Course(4L, "Chemia", "Pierwiastki chemiczne"));
+
+        List<Lesson> prologLessons = new ArrayList<>();
+        prologLessons.add(new Lesson(1L, "Lekcja 1"));
+        prologLessons.add(new Lesson(2L, "Lekcja 2"));
+        prologLessons.add(new Lesson(3L, "Lekcja 3"));
+        courses.get(2).setLessons(prologLessons);
+
         return courses;
     }
 
