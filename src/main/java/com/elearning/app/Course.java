@@ -7,6 +7,7 @@ public class Course {
     private String name;
     private String description;
     private List<Lesson> lessons;
+    private List<Student> students;
 
     public Course(Long id, String name, String description) {
         this.id = id;
@@ -29,6 +30,7 @@ public class Course {
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", lessons=" + lessons +
+                ", students=" + students +
                 '}';
     }
 
@@ -54,5 +56,13 @@ public class Course {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public List<Student> getStudents() {
+        return students;
+    }
+
+    public void setStudents(List<Student> students) {
+        this.students = students;
     }
 }

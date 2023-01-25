@@ -26,6 +26,12 @@ public class CourseController {
         prologLessons.add(new Lesson(3L, "Lekcja 3"));
         courses.get(2).setLessons(prologLessons);
 
+        List<Student> biologiaStudents = new ArrayList<>();
+        biologiaStudents.add(new Student(1L, "Ala", "Kot"));
+        biologiaStudents.add(new Student(2L, "Ola", "Kowal"));
+        biologiaStudents.add(new Student(3L, "Tomek", "Mijas"));
+        courses.get(1).setStudents(biologiaStudents);
+
         return courses;
     }
 
