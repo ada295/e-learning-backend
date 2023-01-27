@@ -1,5 +1,6 @@
 package com.elearning.app;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
@@ -13,8 +14,13 @@ public class Course {
     private String name;
     private String description;
     @OneToMany(mappedBy = "course")
+    @JsonIgnore
     private List<Lesson> lessons;
 //    private List<Student> students;
+
+    public Course() {
+
+    }
 
     public Course(Long id, String name, String description) {
         this.id = id;
@@ -36,7 +42,7 @@ public class Course {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                ", lessons=" + lessons +
+//                ", lessons=" + lessons +
 //                ", students=" + students +
                 '}';
     }

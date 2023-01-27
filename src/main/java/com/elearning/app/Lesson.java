@@ -1,5 +1,6 @@
 package com.elearning.app;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -10,6 +11,10 @@ public class Lesson {
     @ManyToOne
     @JoinColumn(name="course_id", nullable=false)
     private Course course;
+
+    public Lesson (){
+
+    }
 
     public Lesson(Long id, String name) {
         this.id = id;
