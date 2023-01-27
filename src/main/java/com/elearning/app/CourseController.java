@@ -30,7 +30,7 @@ public class CourseController {
         biologiaStudents.add(new Student(1L, "Ala", "Kot"));
         biologiaStudents.add(new Student(2L, "Ola", "Kowal"));
         biologiaStudents.add(new Student(3L, "Tomek", "Mijas"));
-        courses.get(1).setStudents(biologiaStudents);
+//        courses.get(1).setStudents(biologiaStudents);
 
         return courses;
     }

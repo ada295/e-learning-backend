@@ -1,13 +1,20 @@
 package com.elearning.app;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+
 import java.util.List;
 
+@Entity
 public class Course {
+    @Id
     private Long id;
     private String name;
     private String description;
+    @OneToMany(mappedBy = "course")
     private List<Lesson> lessons;
-    private List<Student> students;
+//    private List<Student> students;
 
     public Course(Long id, String name, String description) {
         this.id = id;
@@ -30,7 +37,7 @@ public class Course {
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", lessons=" + lessons +
-                ", students=" + students +
+//                ", students=" + students +
                 '}';
     }
 
@@ -58,11 +65,11 @@ public class Course {
         this.description = description;
     }
 
-    public List<Student> getStudents() {
-        return students;
-    }
-
-    public void setStudents(List<Student> students) {
-        this.students = students;
-    }
+//    public List<Student> getStudents() {
+//        return students;
+//    }
+//
+//    public void setStudents(List<Student> students) {
+//        this.students = students;
+//    }
 }
