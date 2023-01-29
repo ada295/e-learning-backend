@@ -16,6 +16,7 @@ public class CourseController {
 
     @GetMapping("/courses")
     public List<Course> getCourses () {
+
 //        List<Course> courses = new ArrayList<>();
 //
 //        courses.add(new Course(1L,"Matma", "Liczby rzeczywiste"));
