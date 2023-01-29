@@ -1,6 +1,6 @@
 package com.elearning.app;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.elearning.app.course.Course;
 import jakarta.persistence.*;
 
 @Entity

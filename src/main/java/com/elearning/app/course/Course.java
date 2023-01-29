@@ -1,5 +1,6 @@
-package com.elearning.app;
+package com.elearning.app.course;
 
+import com.elearning.app.Lesson;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -13,6 +14,7 @@ public class Course {
     private Long id;
     private String name;
     private String description;
+    private boolean finished;
     @OneToMany(mappedBy = "course")
     @JsonIgnore
     private List<Lesson> lessons;
@@ -22,10 +24,11 @@ public class Course {
 
     }
 
-    public Course(Long id, String name, String description) {
+    public Course(Long id, String name, String description, boolean finished) {
         this.id = id;
         this.name = name;
         this.description = description;
+        this.finished = finished;
     }
 
     public List<Lesson> getLessons() {
@@ -69,6 +72,14 @@ public class Course {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public boolean isFinished() {
+        return finished;
+    }
+
+    public void setFinished(boolean finished) {
+        this.finished = finished;
     }
 
 //    public List<Student> getStudents() {
