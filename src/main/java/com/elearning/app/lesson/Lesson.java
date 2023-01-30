@@ -1,6 +1,7 @@
-package com.elearning.app;
+package com.elearning.app.lesson;
 
 import com.elearning.app.course.Course;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -10,6 +11,7 @@ public class Lesson {
     private String name;
     @ManyToOne
     @JoinColumn(name="course_id", nullable=false)
+    @JsonIgnore
     private Course course;
 
     public Lesson (){

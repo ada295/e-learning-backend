@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
@@ -37,6 +38,15 @@ public class CourseController {
 ////        courses.get(1).setStudents(biologiaStudents);
 
         return repository.findAll();
+    }
+
+    @GetMapping("/courses/{id}")
+    public Course getCourse (@PathVariable Long id) {
+        Optional<Course> optionalCourse = repository.findById(id);
+        if (optionalCourse.isPresent()) {
+            return optionalCourse.get();
+        }
+        return null;
     }
 
     @PostMapping("/courses")
