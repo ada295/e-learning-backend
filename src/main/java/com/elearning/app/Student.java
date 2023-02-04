@@ -4,12 +4,15 @@ public class Student {
     private Long id;
     private String name;
     private String surname;
+    private String pesel;
 
-    public Student (Long id, String name, String surname) {
+    public Student (Long id, String name, String surname, String pesel) {
         this.id = id;
         this.name = name;
         this.surname = surname;
+        this.pesel = pesel;
     }
+
 
     @Override
     public String toString() {
