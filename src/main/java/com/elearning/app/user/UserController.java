@@ -1,4 +1,4 @@
-package com.elearning.app;
+package com.elearning.app.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
