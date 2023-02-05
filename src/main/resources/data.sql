@@ -10,3 +10,12 @@ INSERT INTO LESSON VALUES(3, 'Lekcja numer 3', 1);
 INSERT INTO LESSON VALUES(4, 'Lekcja numer 4', 1);
 INSERT INTO LESSON VALUES(5, 'Lekcja numer 5', 1);
 INSERT INTO LESSON VALUES(6, 'Lekcja numer 6', 1);
+
+Insert into Exam (id, name, course_id) values (1, 'Test zaliczeniowy - semestr 1', 1);
+
+Insert into Question (id, content, points, exam_id) values (1, 'Ile to 2+3?',1,1);
+
+Insert into Answer (id, content, correct, question_id) values (1,'2',0,1);
+Insert into Answer (id, content, correct, question_id) values (2,'4',0,1);
+Insert into Answer (id, content, correct, question_id) values (3,'-2',0,1);
+Insert into Answer (id, content, correct, question_id) values (4,'5',1,1);

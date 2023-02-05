@@ -1,6 +1,6 @@
-package com.elearning.app.responses;
+package com.elearning.app.responses.coursedetails;
 
-public class LessonResponse {
+public class CourseDetailsLessonResponse {
     private Long id;
     private String name;
 

@@ -9,6 +9,7 @@ public class Lesson {
     @Id
     private Long id;
     private String name;
+
     @ManyToOne
     @JoinColumn(name="course_id", nullable=false)
     @JsonIgnore

@@ -1,12 +1,11 @@
 package com.elearning.app.course;
 
-import com.elearning.app.Student;
-import com.elearning.app.course.Course;
-import com.elearning.app.course.CourseRepository;
+import com.elearning.app.exam.Exam;
 import com.elearning.app.lesson.Lesson;
-import com.elearning.app.responses.CourseDetailsResponse;
-import com.elearning.app.responses.CourseResponse;
-import com.elearning.app.responses.LessonResponse;
+import com.elearning.app.responses.coursedetails.CourseDetailsCourseResponse;
+import com.elearning.app.responses.coursedetails.CourseDetailsExamResponse;
+import com.elearning.app.responses.coursedetails.CourseDetailsLessonResponse;
+import com.elearning.app.responses.coursedetails.CourseDetailsResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,19 +21,19 @@ public class CourseController {
     private CourseRepository repository;
 
     @GetMapping("/courses")
-    public List<Course> getCourses () {
+    public List<Course> getCourses() {
         return repository.findAll();
     }
 
     @GetMapping("/courses/{id}")
-    public CourseDetailsResponse getCourse (@PathVariable Long id) {
+    public CourseDetailsResponse getCourse(@PathVariable Long id) {
         Optional<Course> optionalCourse = repository.findById(id);
 
-        if(optionalCourse.isPresent()) {
+        if (optionalCourse.isPresent()) {
             //odpowiedz zawierajaca wszystkie wymagane przez course details dane
             CourseDetailsResponse response = new CourseDetailsResponse();
 
-            CourseResponse courseResponse = new CourseResponse();
+            CourseDetailsCourseResponse courseResponse = new CourseDetailsCourseResponse();
             courseResponse.setId(optionalCourse.get().getId());
             courseResponse.setDescription(optionalCourse.get().getDescription());
             courseResponse.setName(optionalCourse.get().getName());
@@ -42,12 +41,22 @@ public class CourseController {
 
             //lista lekcji
             List<Lesson> lessons = optionalCourse.get().getLessons();
-            List<LessonResponse> lessonResponses = new ArrayList<>();
+            List<CourseDetailsLessonResponse> lessonResponses = new ArrayList<>();
             for (Lesson lesson : lessons) {
-                LessonResponse lessonResponse = new LessonResponse();
+                CourseDetailsLessonResponse lessonResponse = new CourseDetailsLessonResponse();
                 lessonResponse.setId(lesson.getId());
                 lessonResponse.setName(lesson.getName());
                 lessonResponses.add(lessonResponse);
+            }
+
+            //lista exams
+            List<Exam> exams = optionalCourse.get().getExams();
+            List<CourseDetailsExamResponse> examResponses = new ArrayList<>();
+            for (Exam exam : exams) {
+                CourseDetailsExamResponse examResponse = new CourseDetailsExamResponse();
+                examResponse.setId(exam.getId());
+                examResponse.setName(exam.getName());
+                examResponses.add(examResponse);
             }
 
             //lista studentow
@@ -62,6 +71,7 @@ public class CourseController {
 
             response.setCourse(courseResponse);
             response.setLessons(lessonResponses);
+            response.setExams(examResponses);
 
             return response;
         }
@@ -70,7 +80,7 @@ public class CourseController {
     }
 
     @PostMapping("/courses")
-    public void saveCourses (@RequestBody List<Course> courses) {
+    public void saveCourses(@RequestBody List<Course> courses) {
         System.out.println(courses);
     }
 }

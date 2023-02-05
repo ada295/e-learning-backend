@@ -1,9 +1,8 @@
-package com.elearning.app.responses;
+package com.elearning.app.responses.coursedetails;
 
-public class StudentResponse {
+public class CourseDetailsExamResponse {
     private Long id;
     private String name;
-    private String surname;
 
     public Long getId() {
         return id;
@@ -21,11 +20,6 @@ public class StudentResponse {
         this.name = name;
     }
 
-    public String getSurname() {
-        return surname;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
 }
+
+

@@ -1,5 +1,6 @@
 package com.elearning.app.course;
 
+import com.elearning.app.exam.Exam;
 import com.elearning.app.lesson.Lesson;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
@@ -15,10 +16,15 @@ public class Course {
     private String name;
     private String description;
     private boolean finished;
+
     @OneToMany(mappedBy = "course")
     @JsonIgnore
     private List<Lesson> lessons;
+
 //    private List<Student> students;
+    @OneToMany(mappedBy = "course")
+    @JsonIgnore
+    private List<Exam> exams;
 
     public Course() {
 
@@ -29,6 +35,14 @@ public class Course {
         this.name = name;
         this.description = description;
         this.finished = finished;
+    }
+
+    public List<Exam> getExams() {
+        return exams;
+    }
+
+    public void setExams(List<Exam> exams) {
+        this.exams = exams;
     }
 
     public List<Lesson> getLessons() {
