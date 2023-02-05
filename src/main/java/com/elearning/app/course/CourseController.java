@@ -22,6 +22,7 @@ public class CourseController {
 
     @GetMapping("/courses")
     public List<Course> getCourses() {
+        // TODO: 05/02/2023 nalezy zmienic zwracane wartosci, chcemy zwrocic tylko nazwy kursow 
         return repository.findAll();
     }
 
