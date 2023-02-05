@@ -42,10 +42,11 @@ public class CourseController {
             //lista lekcji
             List<Lesson> lessons = optionalCourse.get().getLessons();
             List<CourseDetailsLessonResponse> lessonResponses = new ArrayList<>();
-            for (Lesson lesson : lessons) {
+
+            for (int i = lessons.size() - 1; i >= 0; i--) {
                 CourseDetailsLessonResponse lessonResponse = new CourseDetailsLessonResponse();
-                lessonResponse.setId(lesson.getId());
-                lessonResponse.setName(lesson.getName());
+                lessonResponse.setId(lessons.get(i).getId());
+                lessonResponse.setName(lessons.get(i).getName());
                 lessonResponses.add(lessonResponse);
             }
 
