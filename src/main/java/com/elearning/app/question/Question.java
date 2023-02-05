@@ -13,6 +13,8 @@ public class Question {
     private Long id;
     private String content;
     private int points;
+    @Enumerated(value = EnumType.STRING)
+    private QuestionType questionType;
 
     @ManyToOne
     @JoinColumn(name = "exam_id", nullable = false)
@@ -61,5 +63,13 @@ public class Question {
 
     public void setAnswers(List<Answer> answers) {
         this.answers = answers;
+    }
+
+    public QuestionType getQuestionType() {
+        return questionType;
+    }
+
+    public void setQuestionType(QuestionType questionType) {
+        this.questionType = questionType;
     }
 }

@@ -52,6 +52,7 @@ public class ExamController {
                 questionResponse.setId(question.getId());
                 questionResponse.setContent(question.getContent());
                 questionResponse.setPoints(question.getPoints());
+                questionResponse.setQuestionType(question.getQuestionType().name());
 
                 //lista odpowiedzi
                 List<Answer> answers = question.getAnswers();

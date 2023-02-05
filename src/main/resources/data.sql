@@ -13,7 +13,7 @@ INSERT INTO LESSON VALUES(6, 'Lekcja numer 6', 1);
 
 Insert into Exam (id, name, course_id) values (1, 'Test zaliczeniowy - semestr 1', 1);
 
-Insert into Question (id, content, points, exam_id) values (1, 'Ile to 2+3?',1,1);
+Insert into Question (id, content, points, exam_id, question_type) values (1, 'Ile to 2+3?',1,1, 'ONE_CHOICE');
 
 Insert into Answer (id, content, correct, question_id) values (1,'2',0,1);
 Insert into Answer (id, content, correct, question_id) values (2,'4',0,1);
