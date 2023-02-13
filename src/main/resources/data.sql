@@ -19,3 +19,14 @@ Insert into Answer (id, content, correct, question_id) values (1,'2',0,1);
 Insert into Answer (id, content, correct, question_id) values (2,'4',0,1);
 Insert into Answer (id, content, correct, question_id) values (3,'-2',0,1);
 Insert into Answer (id, content, correct, question_id) values (4,'5',1,1);
+
+Insert into Question (id, content, points, exam_id, question_type) values (2, 'Ile to 2+9?',1,1, 'MULTI_CHOICE');
+
+Insert into Answer (id, content, correct, question_id) values (5,'11',1,2);
+Insert into Answer (id, content, correct, question_id) values (6,'6',0,2);
+Insert into Answer (id, content, correct, question_id) values (7,'3+8',1,2);
+Insert into Answer (id, content, correct, question_id) values (8,'5',0,2);
+
+Insert into Question (id, content, points, exam_id, question_type) values (3, 'Ile to 6+12?',5,1, 'OPEN');
+
+
