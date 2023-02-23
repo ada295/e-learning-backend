@@ -90,7 +90,7 @@ public class ExamController {
                     .findFirst().get();
 
             if(questionFromDB.getQuestionType() == QuestionType.ONE_CHOICE) {
-                Long chosenAnswerId = (Long) examFinishRequest.getAnswers();
+                Long chosenAnswerId = Long.parseLong(examFinishRequest.getAnswers().toString());
                 Long correctAnswer = questionFromDB.getAnswers().stream().filter(answer -> answer.isCorrect())
                         .findFirst().get().getId();
                 if (chosenAnswerId.equals(correctAnswer)) {

@@ -3,15 +3,15 @@ package com.elearning.app.course;
 import com.elearning.app.exam.Exam;
 import com.elearning.app.lesson.Lesson;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 
 import java.util.List;
 
 @Entity
+@SequenceGenerator(name = "course_id_gen", sequenceName = "course_id_gen",  initialValue = 50)
 public class Course {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "course_id_gen")
     private Long id;
     private String name;
     private String description;

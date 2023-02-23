@@ -82,7 +82,8 @@ public class CourseController {
     }
 
     @PostMapping("/courses")
-    public void saveCourses(@RequestBody List<Course> courses) {
-        System.out.println(courses);
+    public void addCourse(@RequestBody Course course) {
+        course.setId(null);
+        repository.save(course);
     }
 }
