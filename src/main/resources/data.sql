@@ -29,4 +29,6 @@ Insert into Answer (id, content, correct, question_id) values (8,'5',0,2);
 
 Insert into Question (id, content, points, exam_id, question_type) values (3, 'Ile to 6+12?',5,1, 'OPEN');
 
+INSERT INTO TEACHER (ID, NAME,SURNAME,EMAIL, PESEL ) VALUES (1 ,'Jan','Kowalski','janko@walksi.pl','98282820112');
+
 

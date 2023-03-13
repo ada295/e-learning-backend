@@ -1,10 +1,13 @@
 package com.elearning.app.teacher;
 
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
+@Entity
+@SequenceGenerator(name = "TeacherSequenceForId", sequenceName = "teacher_id_seq",  initialValue = 50)
 public class Teacher {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "TeacherSequenceForId")
     Long id;
     String name;
     String surname;
