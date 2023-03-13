@@ -4,6 +4,15 @@ public class Student {
     private Long id;
     private String name;
     private String surname;
+
+    public String getPesel() {
+        return pesel;
+    }
+
+    public void setPesel(String pesel) {
+        this.pesel = pesel;
+    }
+
     private String pesel;
 
     public Student (Long id, String name, String surname, String pesel) {
