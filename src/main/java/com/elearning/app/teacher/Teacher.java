@@ -1,6 +1,10 @@
 package com.elearning.app.teacher;
 
+import com.elearning.app.course.Course;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 @SequenceGenerator(name = "TeacherSequenceForId", sequenceName = "teacher_id_seq",  initialValue = 50)
@@ -14,6 +18,9 @@ public class Teacher {
     //String tytulNaukowy;
     String email;
     String pesel;
+    @OneToMany(mappedBy = "teacher")
+    @JsonIgnore
+    List<Course> courses;
 
 
     @Override
@@ -69,5 +76,11 @@ public class Teacher {
         this.pesel = pesel;
     }
 
+    public List<Course> getCourses() {
+        return courses;
+    }
 
+    public void setCourses(List<Course> courses) {
+        this.courses = courses;
+    }
 }

@@ -2,6 +2,7 @@ package com.elearning.app.course;
 
 import com.elearning.app.exam.Exam;
 import com.elearning.app.lesson.Lesson;
+import com.elearning.app.teacher.Teacher;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
@@ -25,6 +26,10 @@ public class Course {
     @OneToMany(mappedBy = "course")
     @JsonIgnore
     private List<Exam> exams;
+
+    @ManyToOne
+    @JoinColumn(name="teacher_id", nullable=false)
+    private Teacher teacher;
 
     public Course() {
 
@@ -94,6 +99,14 @@ public class Course {
 
     public void setFinished(boolean finished) {
         this.finished = finished;
+    }
+
+    public Teacher getTeacher() {
+        return teacher;
+    }
+
+    public void setTeacher(Teacher teacher) {
+        this.teacher = teacher;
     }
 
 //    public List<Student> getStudents() {

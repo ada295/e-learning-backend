@@ -6,7 +6,13 @@ import com.elearning.app.responses.coursedetails.CourseDetailsCourseResponse;
 import com.elearning.app.responses.coursedetails.CourseDetailsExamResponse;
 import com.elearning.app.responses.coursedetails.CourseDetailsLessonResponse;
 import com.elearning.app.responses.coursedetails.CourseDetailsResponse;
+import com.elearning.app.teacher.Teacher;
+import com.elearning.app.teacher.TeacherRepository;
+import org.apache.tomcat.util.http.parser.Authorization;
+import org.apache.tomcat.websocket.AuthenticatorFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -18,17 +24,20 @@ import java.util.Optional;
 public class CourseController {
 
     @Autowired
-    private CourseRepository repository;
+    private CourseRepository courseRepository;
+
+    @Autowired
+    private TeacherRepository teacherRepository;
 
     @GetMapping("/courses")
     public List<Course> getCourses() {
         // TODO: 05/02/2023 nalezy zmienic zwracane wartosci, chcemy zwrocic tylko nazwy kursow 
-        return repository.findAll();
+        return courseRepository.findAll();
     }
 
     @GetMapping("/courses/{id}")
     public CourseDetailsResponse getCourse(@PathVariable Long id) {
-        Optional<Course> optionalCourse = repository.findById(id);
+        Optional<Course> optionalCourse = courseRepository.findById(id);
 
         if (optionalCourse.isPresent()) {
             //odpowiedz zawierajaca wszystkie wymagane przez course details dane
@@ -82,8 +91,25 @@ public class CourseController {
     }
 
     @PostMapping("/courses")
-    public void addCourse(@RequestBody Course course) {
+    public ResponseEntity addCourse(@RequestBody Course course) {
+        //kto dodal ten kurs bedzie okreslone po zrobieniu logowania
+        Teacher teacher = teacherRepository.findById(1L).get();
+
+        String name = course.getName();
+
+        Optional<Course> optionalCourse = teacher.getCourses().stream()
+                .filter(e-> e.getName().equals(name))
+                .findFirst();
+
+        if(optionalCourse.isPresent()) {
+            return new ResponseEntity("Kurs z podaną nazwą już istnieje!", HttpStatus.BAD_REQUEST);
+        }
+
         course.setId(null);
-        repository.save(course);
+        course.setTeacher(teacher);
+        course = courseRepository.save(course);
+        teacher.getCourses().add(course);
+
+        return new ResponseEntity(HttpStatus.OK);
     }
 }

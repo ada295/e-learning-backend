@@ -1,8 +1,13 @@
-INSERT INTO COURSE(ID, NAME, DESCRIPTION, FINISHED) VALUES(1, 'Fizyka', 'Kurs z fizyki - poziom podstawowy', 1);
-INSERT INTO COURSE(ID, NAME, DESCRIPTION, FINISHED) VALUES(2, 'Matematyka', 'Kurs z matematyki - poziom podstawowy', 1);
-INSERT INTO COURSE(ID, NAME, DESCRIPTION, FINISHED) VALUES(3, 'Biologia', 'Kurs z bilogii - poziom rozszerzony', 0);
-INSERT INTO COURSE(ID, NAME, DESCRIPTION, FINISHED) VALUES(4, 'Chemia', 'Kurs z chemii - poziom rozszerzony', 0);
-INSERT INTO COURSE(ID, NAME, DESCRIPTION, FINISHED) VALUES(5, 'Informatyka', 'Kurs z informatyki - poziom podstawowy', 1);
+INSERT INTO TEACHER (ID, NAME,SURNAME,EMAIL, PESEL ) VALUES (1 ,'Jan','Kowalski','janko@walksi.pl','98282820110');
+INSERT INTO TEACHER (ID, NAME,SURNAME,EMAIL, PESEL ) VALUES (2 ,'Jan1','Kowalski1','janko1@walksi.pl','98282820111');
+INSERT INTO TEACHER (ID, NAME,SURNAME,EMAIL, PESEL ) VALUES (3 ,'Jan2','Kowalski2','janko2@walksi.pl','98282820112');
+INSERT INTO TEACHER (ID, NAME,SURNAME,EMAIL, PESEL ) VALUES (4 ,'Jan3','Kowalski3','janko3@walksi.pl','98282820113');
+
+INSERT INTO COURSE(ID, NAME, DESCRIPTION, FINISHED, TEACHER_ID) VALUES(1, 'Fizyka', 'Kurs z fizyki - poziom podstawowy', 1, 1);
+INSERT INTO COURSE(ID, NAME, DESCRIPTION, FINISHED, TEACHER_ID) VALUES(2, 'Matematyka', 'Kurs z matematyki - poziom podstawowy', 1, 1);
+INSERT INTO COURSE(ID, NAME, DESCRIPTION, FINISHED, TEACHER_ID) VALUES(3, 'Biologia', 'Kurs z bilogii - poziom rozszerzony', 0, 1);
+INSERT INTO COURSE(ID, NAME, DESCRIPTION, FINISHED, TEACHER_ID) VALUES(4, 'Chemia', 'Kurs z chemii - poziom rozszerzony', 0, 1);
+INSERT INTO COURSE(ID, NAME, DESCRIPTION, FINISHED, TEACHER_ID) VALUES(5, 'Informatyka', 'Kurs z informatyki - poziom podstawowy', 1, 1);
 
 INSERT INTO LESSON VALUES(1, 'Lekcja numer 1', 1);
 INSERT INTO LESSON VALUES(2, 'Lekcja numer 2', 1);
@@ -28,10 +33,4 @@ Insert into Answer (id, content, correct, question_id) values (7,'3+8',1,2);
 Insert into Answer (id, content, correct, question_id) values (8,'5',0,2);
 
 Insert into Question (id, content, points, exam_id, question_type) values (3, 'Ile to 6+12?',5,1, 'OPEN');
-
-INSERT INTO TEACHER (ID, NAME,SURNAME,EMAIL, PESEL ) VALUES (1 ,'Jan','Kowalski','janko@walksi.pl','98282820110');
-INSERT INTO TEACHER (ID, NAME,SURNAME,EMAIL, PESEL ) VALUES (2 ,'Jan1','Kowalski1','janko1@walksi.pl','98282820111');
-INSERT INTO TEACHER (ID, NAME,SURNAME,EMAIL, PESEL ) VALUES (3 ,'Jan2','Kowalski2','janko2@walksi.pl','98282820112');
-INSERT INTO TEACHER (ID, NAME,SURNAME,EMAIL, PESEL ) VALUES (4 ,'Jan3','Kowalski3','janko3@walksi.pl','98282820113');
-
 
