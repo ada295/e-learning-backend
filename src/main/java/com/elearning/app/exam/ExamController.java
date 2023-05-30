@@ -79,6 +79,11 @@ public class ExamController {
         return null;
     }
 
+    @PostMapping("/course/{courseId}/exam")
+    public void addExam (@PathVariable Long courseId, @RequestBody AddExamRequest request) {
+        System.out.println(request);
+    }
+
     // zabezpieczyc przed nieprawidlowym id exam
     @PostMapping("/exam/{id}/finish")
     public void finishExam (@PathVariable Long id, @RequestBody List<ExamFinishRequest> body) {
