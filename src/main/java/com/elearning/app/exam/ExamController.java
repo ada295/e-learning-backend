@@ -2,7 +2,11 @@ package com.elearning.app.exam;
 
 
 import com.elearning.app.answer.Answer;
+import com.elearning.app.answer.AnswerRepository;
+import com.elearning.app.course.Course;
+import com.elearning.app.course.CourseRepository;
 import com.elearning.app.question.Question;
+import com.elearning.app.question.QuestionRepository;
 import com.elearning.app.question.QuestionType;
 import com.elearning.app.responses.examdetails.ExamDetailsAnswerResponse;
 import com.elearning.app.responses.examdetails.ExamDetailsExamResponse;
@@ -22,6 +26,12 @@ public class ExamController {
 
     @Autowired
     private ExamRepository repository;
+    @Autowired
+    private CourseRepository courseRepository;
+    @Autowired
+    private QuestionRepository questionRepository;
+    @Autowired
+    private AnswerRepository answerRepository;
 
 //    @GetMapping("/exam")
 //    public List<ExamDetailsExamResponse> getExams () {
@@ -81,7 +91,27 @@ public class ExamController {
 
     @PostMapping("/course/{courseId}/exam")
     public void addExam (@PathVariable Long courseId, @RequestBody AddExamRequest request) {
-        System.out.println(request);
+        Exam exam = new Exam();
+        exam.setName(request.getName());
+        exam.setDescription(request.getDescription());
+        Optional<Course> byId = courseRepository.findById(courseId);
+        exam.setCourse(byId.get());
+        exam = repository.save(exam);
+        for (AddExamQuestionRequest requestQuestion : request.getQuestions()) {
+            Question question = new Question();
+            question.setContent(requestQuestion.getContent());
+            question.setQuestionType(QuestionType.valueOf(requestQuestion.getType()));
+            question.setPoints(requestQuestion.getPoints());
+            question.setExam(exam);
+            question = questionRepository.save(question);
+            for (AddExamQuestionAnswerRequest requestAnswer : requestQuestion.getAnswers()) {
+                Answer answer = new Answer();
+                answer.setContent(requestAnswer.getContent());
+                answer.setCorrect(requestAnswer.getCorrect());
+                answer.setQuestion(question);
+                answerRepository.save(answer);
+            }
+        }
     }
 
     // zabezpieczyc przed nieprawidlowym id exam

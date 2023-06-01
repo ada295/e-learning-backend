@@ -10,9 +10,11 @@ import java.util.List;
 @Entity
 public class Question {
     @Id
+    @SequenceGenerator(name = "QuestionSequenceForId", sequenceName = "question_id_seq",  initialValue = 50)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "QuestionSequenceForId")
     private Long id;
     private String content;
-    private int points;
+    private Integer points;
     @Enumerated(value = EnumType.STRING)
     private QuestionType questionType;
 
@@ -41,11 +43,11 @@ public class Question {
         this.content = content;
     }
 
-    public int getPoints() {
+    public Integer getPoints() {
         return points;
     }
 
-    public void setPoints(int points) {
+    public void setPoints(Integer points) {
         this.points = points;
     }
 

@@ -11,8 +11,11 @@ import java.util.List;
 public class Exam {
 
     @Id
+    @SequenceGenerator(name = "ExamSequenceForId", sequenceName = "exam_id_seq",  initialValue = 50)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "ExamSequenceForId")
     private Long id;
     private String name;
+    private String description;
     @OneToMany(mappedBy = "exam")
     @JsonIgnore
     private List<Question> questions;
@@ -51,5 +54,13 @@ public class Exam {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

@@ -2,15 +2,14 @@ package com.elearning.app.answer;
 
 import com.elearning.app.question.Question;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 
 @Entity
 public class Answer {
 
     @Id
+    @SequenceGenerator(name = "AnswerSequenceForId", sequenceName = "answer_id_seq",  initialValue = 50)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "AnswerSequenceForId")
     private Long id;
     private String content;
     private boolean correct;

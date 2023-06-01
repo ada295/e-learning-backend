@@ -7,7 +7,7 @@ import java.util.List;
 public class ExamDetailsQuestionResponse {
     private Long id;
     private String content;
-    private int points;
+    private Integer points;
     private String questionType;
     private List<ExamDetailsAnswerResponse> answers;
 
@@ -35,11 +35,11 @@ public class ExamDetailsQuestionResponse {
         this.content = content;
     }
 
-    public int getPoints() {
+    public Integer getPoints() {
         return points;
     }
 
-    public void setPoints(int points) {
+    public void setPoints(Integer points) {
         this.points = points;
     }
 
