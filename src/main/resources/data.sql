@@ -16,6 +16,9 @@ INSERT INTO LESSON VALUES(4, 'Lekcja numer 4', 1);
 INSERT INTO LESSON VALUES(5, 'Lekcja numer 5', 1);
 INSERT INTO LESSON VALUES(6, 'Lekcja numer 6', 1);
 
+INSERT INTO CALENDAR_EVENT(ID, DAY, MONTH, YEAR, HOUR, MINUTES, DESCRIPTION, TYPE, LESSON_ID)
+            VALUES(1, 26, 7, 2023, 10, 15, '', 'START_EXAM', 6);
+
 Insert into Exam (id, name, course_id) values (1, 'Test zaliczeniowy - semestr 1', 1);
 
 Insert into Question (id, content, points, exam_id, question_type) values (1, 'Ile to 2+3?',1,1, 'ONE_CHOICE');

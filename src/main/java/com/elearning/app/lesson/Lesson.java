@@ -1,8 +1,11 @@
 package com.elearning.app.lesson;
 
+import com.elearning.app.CalendarEvent;
 import com.elearning.app.course.Course;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 public class Lesson {
@@ -14,6 +17,9 @@ public class Lesson {
     @JoinColumn(name="course_id", nullable=false)
     @JsonIgnore
     private Course course;
+
+    @OneToMany
+    private List<CalendarEvent> calendarEvents;
 
     public Lesson (){
 
@@ -54,5 +60,13 @@ public class Lesson {
 
     public void setCourse(Course course) {
         this.course = course;
+    }
+
+    public List<CalendarEvent> getCalendarEvents() {
+        return calendarEvents;
+    }
+
+    public void setCalendarEvents(List<CalendarEvent> calendarEvents) {
+        this.calendarEvents = calendarEvents;
     }
 }
