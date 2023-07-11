@@ -17,7 +17,16 @@ INSERT INTO LESSON VALUES(5, 'Lekcja numer 5', 1);
 INSERT INTO LESSON VALUES(6, 'Lekcja numer 6', 1);
 
 INSERT INTO CALENDAR_EVENT(ID, DAY, MONTH, YEAR, HOUR, MINUTES, DESCRIPTION, TYPE, LESSON_ID)
-            VALUES(1, 26, 7, 2023, 10, 15, '', 'START_EXAM', 6);
+            VALUES(1, 26, 7, 2023, 10, 15, 'Test podsumowujący pierwszy rok nauki', 'START_EXAM', 6);
+
+INSERT INTO CALENDAR_EVENT(ID, DAY, MONTH, YEAR, HOUR, MINUTES, DESCRIPTION, TYPE, LESSON_ID)
+            VALUES(2, 23, 5, 2023, 9, 30, 'Wycieczka do ZOO - zbiórka', 'OTHER', 5);
+INSERT INTO CALENDAR_EVENT(ID, DAY, MONTH, YEAR, HOUR, MINUTES, DESCRIPTION, TYPE, LESSON_ID)
+            VALUES(4, 23, 5, 2023, 18, 30, 'Powrót z ZOO', 'OTHER', 5);
+
+INSERT INTO CALENDAR_EVENT(ID, DAY, MONTH, YEAR, HOUR, MINUTES, DESCRIPTION, TYPE, LESSON_ID)
+            VALUES(3, 24, 5, 2023, 16, 30, 'Wywiadówka', 'OTHER', 4);
+
 
 Insert into Exam (id, name, course_id) values (1, 'Test zaliczeniowy - semestr 1', 1);
 
