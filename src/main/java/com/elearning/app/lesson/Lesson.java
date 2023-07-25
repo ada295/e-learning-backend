@@ -14,14 +14,17 @@ public class Lesson {
     private String name;
 
     @ManyToOne
-    @JoinColumn(name="course_id", nullable=false)
+    @JoinColumn(name = "course_id", nullable = false)
     @JsonIgnore
     private Course course;
 
     @OneToMany
     private List<CalendarEvent> calendarEvents;
 
-    public Lesson (){
+    @OneToMany
+    private List<Material> materials;
+
+    public Lesson() {
 
     }
 
@@ -68,5 +71,13 @@ public class Lesson {
 
     public void setCalendarEvents(List<CalendarEvent> calendarEvents) {
         this.calendarEvents = calendarEvents;
+    }
+
+    public List<Material> getMaterials() {
+        return materials;
+    }
+
+    public void setMaterials(List<Material> materials) {
+        this.materials = materials;
     }
 }
