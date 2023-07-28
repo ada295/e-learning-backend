@@ -46,3 +46,7 @@ Insert into Answer (id, content, correct, question_id) values (8,'5',0,2);
 
 Insert into Question (id, content, points, exam_id, question_type) values (3, 'Ile to 6+12?',5,1, 'OPEN');
 
+Insert into Material (id, name, description, type, filename, lesson_id) values (1, 'Materiał 1', 'm1', 'TXT', 'zadania.txt', 1);
+Insert into Material (id, name, description, type, filename, lesson_id) values (2, 'Materiał 2', 'm1', 'PDF', 'zadania.pdf', 1);
+Insert into Material (id, name, description, type, filename, lesson_id) values (3, 'Materiał 3', 'm1', 'TXT', 'zadania.txt', 1);
+Insert into Material (id, name, description, type, filename, lesson_id) values (4, 'Materiał 4', 'm1', 'TXT', 'zadania.txt', 1);

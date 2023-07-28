@@ -10,6 +10,7 @@ public class Material {
     private Long id;
     private String name;
     private String description;
+    @Enumerated(value = EnumType.STRING)
     private FileType type;
     private String filename;
 
