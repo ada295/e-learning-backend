@@ -26,6 +26,8 @@ public class LessonController {
     private LessonRepository repository;
     @Autowired
     private MaterialRepository materialRepository;
+    @Autowired
+    private TaskRepository taskRepository;
 
     @GetMapping("/lessons")
     public List<Lesson> getLessonsByCourseId(@RequestParam Long courseId) {
@@ -50,6 +52,11 @@ public class LessonController {
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
                 .body(resource);
+    }
+
+    @GetMapping(path = "/lessons/{lessonId}/tasks")
+    public List<Task> getTasks(@PathVariable Long lessonId) {
+        return taskRepository.findAllByLessonId(lessonId);
     }
 
     @PostMapping(path = "/lessons/{lessonId}/materials")
