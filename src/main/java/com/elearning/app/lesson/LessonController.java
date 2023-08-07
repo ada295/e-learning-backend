@@ -87,4 +87,9 @@ public class LessonController {
 
         return ResponseEntity.ok().build();
     }
+
+    @DeleteMapping(path = "/materials/{materialId}/delete")
+    public void deleteMaterial(@PathVariable Long materialId) {
+        materialRepository.deleteById(materialId);
+    }
 }
