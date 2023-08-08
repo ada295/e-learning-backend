@@ -6,7 +6,8 @@ import jakarta.persistence.*;
 @Entity
 public class Material {
     @Id
-    @GeneratedValue
+    @SequenceGenerator(name = "material_id_gen", sequenceName = "material_id_seq",  initialValue = 50)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "material_id_gen")
     private Long id;
     private String name;
     private String description;
