@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 public class Task {
@@ -11,23 +12,23 @@ public class Task {
     @Id
     @GeneratedValue
     private Long id;
-    private String name;
     private String description;
-    @Enumerated(value = EnumType.STRING)
-    private Status status;
     private Date endDate;
     @ManyToOne
     @JoinColumn(name = "lesson_id", nullable = false)
     @JsonIgnore
     private Lesson lesson;
+    @OneToMany(mappedBy = "task")
+    @JsonIgnore
+    private List<TaskStudent> taskStudents;
 
     public Task() {
 
     }
 
-    public Task(Long id, String name) {
+    public Task(Long id, String description) {
         this.id = id;
-        this.name = name;
+        this.description = description;
     }
 
     public Date getEndDate() {
@@ -46,28 +47,12 @@ public class Task {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getDescription() {
         return description;
     }
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
     }
 
     public Lesson getLesson() {
@@ -78,5 +63,11 @@ public class Task {
         this.lesson = lesson;
     }
 
+    public List<TaskStudent> getTaskStudents() {
+        return taskStudents;
+    }
 
+    public void setTaskStudents(List<TaskStudent> taskStudents) {
+        this.taskStudents = taskStudents;
+    }
 }

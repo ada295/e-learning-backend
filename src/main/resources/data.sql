@@ -50,3 +50,38 @@ Insert into Material (id, name, description, type, filename, lesson_id) values (
 Insert into Material (id, name, description, type, filename, lesson_id) values (2, 'Materiał 2', 'm1', 'PDF', 'zadania.pdf', 1);
 Insert into Material (id, name, description, type, filename, lesson_id) values (3, 'Materiał 3', 'm1', 'TXT', 'zadania.txt', 1);
 Insert into Material (id, name, description, type, filename, lesson_id) values (4, 'Materiał 4', 'm1', 'TXT', 'zadania.txt', 1);
+
+
+INSERT INTO STUDENT (ID, NAME, SURNAME, EMAIL, PESEL) VALUES (1 ,'Jan','Kowalski','janko@walksi.pl','98282820110');
+INSERT INTO STUDENT (ID, NAME, SURNAME, EMAIL, PESEL) VALUES (2, 'Anna', 'Nowak', 'anna@nowak.pl', '92020210123');
+INSERT INTO STUDENT (ID, NAME, SURNAME, EMAIL, PESEL) VALUES (3, 'Krzysztof', 'Wójcik', 'krzysztof@wojcik.pl', '88051551234');
+INSERT INTO STUDENT (ID, NAME, SURNAME, EMAIL, PESEL) VALUES (4, 'Barbara', 'Kowalczyk', 'barbara@kowalczyk.pl', '91010170345');
+INSERT INTO STUDENT (ID, NAME, SURNAME, EMAIL, PESEL) VALUES (5, 'Piotr', 'Lewandowski', 'piotr@lewandowski.pl', '95021580456');
+INSERT INTO STUDENT (ID, NAME, SURNAME, EMAIL, PESEL) VALUES (6, 'Magdalena', 'Dąbrowska', 'magda@dabrowska.pl', '89080810567');
+INSERT INTO STUDENT (ID, NAME, SURNAME, EMAIL, PESEL) VALUES (7, 'Kamil', 'Zieliński', 'kamil@zielinski.pl', '93030330678');
+INSERT INTO STUDENT (ID, NAME, SURNAME, EMAIL, PESEL) VALUES (8, 'Agnieszka', 'Szymańska', 'agnieszka@szymanska.pl', '97070740789');
+INSERT INTO STUDENT (ID, NAME, SURNAME, EMAIL, PESEL) VALUES (9, 'Mateusz', 'Woźniak', 'mateusz@wozniak.pl', '96060650890');
+INSERT INTO STUDENT (ID, NAME, SURNAME, EMAIL, PESEL) VALUES (10, 'Katarzyna', 'Kamińska', 'katarzyna@kaminska.pl', '94041460901');
+INSERT INTO STUDENT (ID, NAME, SURNAME, EMAIL, PESEL) VALUES (11, 'Michał', 'Lis', 'michal@lis.pl', '90090971012');
+INSERT INTO STUDENT (ID, NAME, SURNAME, EMAIL, PESEL) VALUES (12, 'Joanna', 'Piotrowska', 'joanna@piotrowska.pl', '86030381123');
+INSERT INTO STUDENT (ID, NAME, SURNAME, EMAIL, PESEL) VALUES (13, 'Andrzej', 'Grabowski', 'andrzej@grabowski.pl', '93020291234');
+INSERT INTO STUDENT (ID, NAME, SURNAME, EMAIL, PESEL) VALUES (14, 'Monika', 'Jaworska', 'monika@jaworska.pl', '92010101345');
+INSERT INTO STUDENT (ID, NAME, SURNAME, EMAIL, PESEL) VALUES (15, 'Łukasz', 'Nowicki', 'lukasz@nowicki.pl', '91050511456');
+INSERT INTO STUDENT (ID, NAME, SURNAME, EMAIL, PESEL) VALUES (16, 'Karolina', 'Malinowska', 'karolina@malinowska.pl', '96060621567');
+INSERT INTO STUDENT (ID, NAME, SURNAME, EMAIL, PESEL) VALUES (17, 'Tomasz', 'Oleksy', 'tomasz@oleksy.pl', '94030331678');
+INSERT INTO STUDENT (ID, NAME, SURNAME, EMAIL, PESEL) VALUES (18, 'Ewa', 'Stępień', 'ewa@stepien.pl', '90080841789');
+INSERT INTO STUDENT (ID, NAME, SURNAME, EMAIL, PESEL) VALUES (19, 'Marcin', 'Zawadzki', 'marcin@zawadzki.pl', '87070751890');
+INSERT INTO STUDENT (ID, NAME, SURNAME, EMAIL, PESEL) VALUES (20, 'Natalia', 'Krawczyk', 'natalia@krawczyk.pl', '95060661901');
+
+INSERT INTO Task (id, description, end_date, lesson_id) VALUES (1, 'Wykonaj zadania zamieszczone w materiałach 4, 5, 6', '2023-10-04',  1);
+INSERT INTO Task (id, description, end_date, lesson_id) VALUES (2, 'Przygotuj prezentację na temat historii programowania', '2023-03-05',  1);
+INSERT INTO Task (id, description, end_date, lesson_id) VALUES (3, 'Zaimplementuj algorytm sortowania bąbelkowego', '2023-03-06',  1);
+INSERT INTO Task (id, description, end_date, lesson_id) VALUES (4, 'Przeczytaj rozdział 7 z podręcznika', '2023-04-20',  1);
+INSERT INTO Task (id, description, end_date, lesson_id) VALUES (5, 'Rozwiąż ćwiczenia z programowania dynamicznego', '2024-02-22',  1);
+INSERT INTO Task (id, description, end_date, lesson_id) VALUES (6, 'Zaprojektuj interfejs użytkownika dla aplikacji mobilnej', '2024-01-25',  1);
+
+INSERT INTO Task_Student (id, status, task_id, student_id, points) VALUES (1, 'OCENIONE', 1, 1, 4);
+INSERT INTO Task_Student (id, status, task_id, student_id, points) VALUES (2, 'WYKONANE', 2, 1, null);
+INSERT INTO Task_Student (id, status, task_id, student_id, points) VALUES (3, 'OCENIONE', 3, 1, null);
+
+

@@ -7,19 +7,19 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-public class UserController {
+public class StudentController {
 
     @Autowired
-    private UserRepository repository;
+    private StudentRepository repository;
 
     @GetMapping("/users")
-    public List<UserTest> getUsers() {
+    public List<Student> getUsers() {
         return repository.findAll();
     }
 
     @GetMapping("/users/{id}")
-    public UserTest getUserById(@PathVariable Long id) {
-        Optional<UserTest> userTestOptional = repository.findById(id);
+    public Student getUserById(@PathVariable Long id) {
+        Optional<Student> userTestOptional = repository.findById(id);
         if (userTestOptional.isPresent()) {
             return userTestOptional.get();
         }
@@ -27,7 +27,7 @@ public class UserController {
     }
 
     @GetMapping("/users/search")
-    public List<UserTest> searchUsers(@RequestParam String name,@RequestParam String surname) {
+    public List<Student> searchUsers(@RequestParam String name, @RequestParam String surname) {
         if ((name == null || "".equals(name)) && (surname == null || "".equals(surname))) {
             //zwracamy wszystkich uzytkownikow
             return repository.findAll();
@@ -44,12 +44,12 @@ public class UserController {
     }
 
     @PostMapping("/users")
-    public void saveUsers(@RequestBody List<UserTest> userTests) {
+    public void saveUsers(@RequestBody List<Student> userTests) {
         repository.saveAll(userTests);
     }
 
     @DeleteMapping("/users")
-    public void deleteUsers(@RequestBody List<UserTest> userTests) {
+    public void deleteUsers(@RequestBody List<Student> userTests) {
         repository.deleteAll(userTests);
     }
 }

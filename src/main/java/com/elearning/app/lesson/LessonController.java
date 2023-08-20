@@ -16,7 +16,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
@@ -57,6 +60,42 @@ public class LessonController {
     @GetMapping(path = "/lessons/{lessonId}/tasks")
     public List<Task> getTasks(@PathVariable Long lessonId) {
         return taskRepository.findAllByLessonId(lessonId);
+    }
+
+    @GetMapping(path = "/lessons/{lessonId}/student-tasks")
+    public List<TaskToDo> getTasksToDo(@PathVariable Long lessonId) {
+        Long studentId = 1L; //jak bedzie logowanie to automatycznie
+
+        List<TaskToDo> tasksToDo = new ArrayList<>();
+        List<Task> allByLessonId = taskRepository.findAllByLessonId(lessonId);
+        for (Task task : allByLessonId) {
+            TaskToDo taskToDo = new TaskToDo();
+            taskToDo.setTask(task);
+
+            Optional<TaskStudent> taskStudent = task.getTaskStudents().stream()
+                    .filter(e -> e.getStudent() != null && studentId.equals(e.getStudent().getId())).findFirst();
+
+            if (taskStudent.isPresent()) {
+                taskToDo.setTaskStudent(taskStudent.get());
+                TaskStudentStatus status = taskStudent.get().getStatus();
+                taskToDo.setStatus(status);
+                if(status == TaskStudentStatus.OCENIONE){
+                    taskToDo.setIcon("star");
+                } else if (status == TaskStudentStatus.WYKONANE) {
+                    taskToDo.setIcon("done");
+                }
+            } else if (task.getEndDate().before(new Date())) {
+                taskToDo.setStatus(TaskStudentStatus.AKTYWNE);
+                taskToDo.setIcon("alarm");
+            } else {
+                taskToDo.setStatus(TaskStudentStatus.NIEWYKONANE);
+                taskToDo.setIcon("close");
+            }
+
+            tasksToDo.add(taskToDo);
+        }
+
+        return tasksToDo;
     }
 
     @PostMapping(path = "/lessons/{lessonId}/materials")
