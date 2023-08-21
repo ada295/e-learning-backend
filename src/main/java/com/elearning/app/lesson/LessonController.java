@@ -1,6 +1,8 @@
 package com.elearning.app.lesson;
 
 
+import com.elearning.app.user.Student;
+import com.elearning.app.user.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -31,6 +33,10 @@ public class LessonController {
     private MaterialRepository materialRepository;
     @Autowired
     private TaskRepository taskRepository;
+    @Autowired
+    private StudentRepository studentRepository;
+    @Autowired
+    private TaskStudentRepository taskStudentRepository;
 
     @GetMapping("/lessons")
     public List<Lesson> getLessonsByCourseId(@RequestParam Long courseId) {
@@ -69,33 +75,46 @@ public class LessonController {
         List<TaskToDo> tasksToDo = new ArrayList<>();
         List<Task> allByLessonId = taskRepository.findAllByLessonId(lessonId);
         for (Task task : allByLessonId) {
-            TaskToDo taskToDo = new TaskToDo();
-            taskToDo.setTask(task);
-
-            Optional<TaskStudent> taskStudent = task.getTaskStudents().stream()
-                    .filter(e -> e.getStudent() != null && studentId.equals(e.getStudent().getId())).findFirst();
-
-            if (taskStudent.isPresent()) {
-                taskToDo.setTaskStudent(taskStudent.get());
-                TaskStudentStatus status = taskStudent.get().getStatus();
-                taskToDo.setStatus(status);
-                if(status == TaskStudentStatus.OCENIONE){
-                    taskToDo.setIcon("star");
-                } else if (status == TaskStudentStatus.WYKONANE) {
-                    taskToDo.setIcon("done");
-                }
-            } else if (task.getEndDate().before(new Date())) {
-                taskToDo.setStatus(TaskStudentStatus.AKTYWNE);
-                taskToDo.setIcon("alarm");
-            } else {
-                taskToDo.setStatus(TaskStudentStatus.NIEWYKONANE);
-                taskToDo.setIcon("close");
-            }
-
+            TaskToDo taskToDo = buildTaskToDo(task, studentId);
             tasksToDo.add(taskToDo);
         }
 
         return tasksToDo;
+    }
+
+    @GetMapping(path = "/student-tasks/{taskId}")
+    public TaskToDo getTaskToDo(@PathVariable Long taskId) {
+        Long studentId = 1L; //jak bedzie logowanie to automatycznie
+
+        Task task = taskRepository.findById(taskId).get();
+
+        return buildTaskToDo(task, studentId);
+    }
+
+    private TaskToDo buildTaskToDo(Task task, Long studentId) {
+        TaskToDo taskToDo = new TaskToDo();
+        taskToDo.setTask(task);
+
+        Optional<TaskStudent> taskStudent = task.getTaskStudents().stream()
+                .filter(e -> e.getStudent() != null && studentId.equals(e.getStudent().getId())).findFirst();
+
+        if (taskStudent.isPresent()) {
+            taskToDo.setTaskStudent(taskStudent.get());
+            TaskStudentStatus status = taskStudent.get().getStatus();
+            taskToDo.setStatus(status);
+            if (status == TaskStudentStatus.OCENIONE) {
+                taskToDo.setIcon("star");
+            } else if (status == TaskStudentStatus.WYKONANE) {
+                taskToDo.setIcon("done");
+            }
+        } else if (task.getEndDate().before(new Date())) {
+            taskToDo.setStatus(TaskStudentStatus.AKTYWNE);
+            taskToDo.setIcon("alarm");
+        } else {
+            taskToDo.setStatus(TaskStudentStatus.NIEWYKONANE);
+            taskToDo.setIcon("close");
+        }
+        return taskToDo;
     }
 
     @PostMapping(path = "/lessons/{lessonId}/materials")
@@ -127,8 +146,62 @@ public class LessonController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping(path = "/tasks/{taskId}/upload")
+    public ResponseEntity uploadTaskSolutionFile(@RequestParam(required = false) MultipartFile file, @PathVariable Long taskId)
+            throws IOException {
+        Long studentId = 1L;
+        Student student = studentRepository.findById(studentId).get();
+
+        Task task = taskRepository.findById(taskId).get();
+        String filename = file.getOriginalFilename();
+
+        try {
+            File fileTmp = new File("C:\\Users\\user\\Desktop\\Dokumenty\\task_solutions\\" + task.getId() + "\\" + studentId + "\\" + filename);
+            File directory = new File("C:\\Users\\user\\Desktop\\Dokumenty\\task_solutions\\" + task.getId() + "\\" + studentId);
+            directory.mkdirs();
+            Files.copy(file.getInputStream(), fileTmp.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+
+        TaskStudent taskStudent = new TaskStudent();
+        taskStudent.setStudent(student);
+        taskStudent.setStatus(TaskStudentStatus.WYKONANE);
+        taskStudent.setTask(task);
+        taskStudent.setFilename(filename);
+
+        taskStudentRepository.save(taskStudent);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping(path = "/tasks-solution/{id}/download")
+    public ResponseEntity<Resource> downloadTaskSolution(@PathVariable Long id) throws IOException {
+        Long studentId = 1L;
+        Student student = studentRepository.findById(studentId).get();
+
+        TaskStudent taskStudent = taskStudentRepository.findById(id).get();
+        String filename = taskStudent.getFilename();
+
+        File file = new File("C:\\Users\\user\\Desktop\\Dokumenty\\task_solutions\\" + taskStudent.getTask().getId() + "\\" + studentId + "\\" + filename);
+        Path path = file.toPath();
+        Resource resource = new UrlResource(path.toUri());
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
+                .body(resource);
+    }
+
+
     @DeleteMapping(path = "/materials/{materialId}/delete")
     public void deleteMaterial(@PathVariable Long materialId) {
         materialRepository.deleteById(materialId);
+    }
+
+    @DeleteMapping(path = "/student-tasks/{id}/delete")
+    public void deleteTaskSolution(@PathVariable Long id) {
+        Long studentId = 1L;
+        taskStudentRepository.deleteById(id);
     }
 }

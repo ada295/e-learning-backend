@@ -21,6 +21,8 @@ public class TaskStudent {
     @JsonIgnore
     private Student student;
     private Long points;
+    private String filename;
+    private String comment;
 
     public TaskStudent() {
     }
@@ -63,5 +65,21 @@ public class TaskStudent {
 
     public void setPoints(Long points) {
         this.points = points;
+    }
+
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }

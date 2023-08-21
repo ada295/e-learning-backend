@@ -80,8 +80,9 @@ INSERT INTO Task (id, description, end_date, lesson_id) VALUES (4, 'Przeczytaj r
 INSERT INTO Task (id, description, end_date, lesson_id) VALUES (5, 'Rozwiąż ćwiczenia z programowania dynamicznego', '2024-02-22',  1);
 INSERT INTO Task (id, description, end_date, lesson_id) VALUES (6, 'Zaprojektuj interfejs użytkownika dla aplikacji mobilnej', '2024-01-25',  1);
 
-INSERT INTO Task_Student (id, status, task_id, student_id, points) VALUES (1, 'OCENIONE', 1, 1, 4);
-INSERT INTO Task_Student (id, status, task_id, student_id, points) VALUES (2, 'WYKONANE', 2, 1, null);
-INSERT INTO Task_Student (id, status, task_id, student_id, points) VALUES (3, 'OCENIONE', 3, 1, null);
+INSERT INTO Task_Student (id, status, task_id, student_id, points, filename, comment) VALUES (1, 'OCENIONE', 1, 1, 4, 'rozwiazanie.txt', 'Drobne błędy stylistyczne.');
+INSERT INTO Task_Student (id, status, task_id, student_id, points, filename) VALUES (2, 'WYKONANE', 2, 1, null, 'kowalski.zip');
+INSERT INTO Task_Student (id, status, task_id, student_id, points, filename, comment) VALUES (3, 'OCENIONE', 3, 1, 3, 'rozwiazanie.pdf', 'Kilka błędów w obliczeniach');
+INSERT INTO Task_Student (id, status, task_id, student_id, points, filename) VALUES (4, 'OCENIONE', 4, 1, 5, 'zadania.pdf');
 
 
