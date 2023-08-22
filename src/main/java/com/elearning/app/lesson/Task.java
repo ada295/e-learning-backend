@@ -5,12 +5,13 @@ import jakarta.persistence.*;
 
 import java.util.Date;
 import java.util.List;
+@SequenceGenerator(name = "task_id_gen", sequenceName = "task_id_gen", initialValue = 50)
 
 @Entity
 public class Task {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "task_id_gen")
     private Long id;
     private String description;
     private Date endDate;

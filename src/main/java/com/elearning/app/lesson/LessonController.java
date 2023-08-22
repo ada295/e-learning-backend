@@ -128,6 +128,17 @@ public class LessonController {
         return new ResponseEntity<>(material, HttpStatus.OK);
     }
 
+    @PostMapping(path = "/lessons/{lessonId}/tasks")
+    public ResponseEntity<Task> saveTask(@PathVariable Long lessonId, @RequestBody Task task)
+            throws IOException {
+        Lesson lesson = repository.findById(lessonId).get();
+        task.setId(null);
+        task.setLesson(lesson);
+        task = taskRepository.save(task);
+
+        return new ResponseEntity<>(task, HttpStatus.OK);
+    }
+
     @PostMapping(path = "/materials/{materialId}/upload")
     public ResponseEntity uploadFile(@RequestParam(required = false) MultipartFile file, @PathVariable Long materialId)
             throws IOException {
