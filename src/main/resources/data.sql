@@ -77,12 +77,14 @@ INSERT INTO Task (id, description, end_date, lesson_id) VALUES (1, 'Wykonaj zada
 INSERT INTO Task (id, description, end_date, lesson_id) VALUES (2, 'Przygotuj prezentację na temat historii programowania', '2023-03-05',  1);
 INSERT INTO Task (id, description, end_date, lesson_id) VALUES (3, 'Zaimplementuj algorytm sortowania bąbelkowego', '2023-03-06',  1);
 INSERT INTO Task (id, description, end_date, lesson_id) VALUES (4, 'Przeczytaj rozdział 7 z podręcznika', '2023-04-20',  1);
-INSERT INTO Task (id, description, end_date, lesson_id) VALUES (5, 'Rozwiąż ćwiczenia z programowania dynamicznego', '2024-02-22',  1);
+INSERT INTO Task (id, description, end_date, lesson_id) VALUES (5, 'Rozwiąż ćwiczenia z programowania dynamicznego', '2023-08-23',  1);
 INSERT INTO Task (id, description, end_date, lesson_id) VALUES (6, 'Zaprojektuj interfejs użytkownika dla aplikacji mobilnej', '2024-01-25',  1);
 
 INSERT INTO Task_Student (id, status, task_id, student_id, points, filename, comment) VALUES (1, 'OCENIONE', 1, 1, 4, 'rozwiazanie.txt', 'Drobne błędy stylistyczne.');
 INSERT INTO Task_Student (id, status, task_id, student_id, points, filename) VALUES (2, 'WYKONANE', 2, 1, null, 'kowalski.zip');
 INSERT INTO Task_Student (id, status, task_id, student_id, points, filename, comment) VALUES (3, 'OCENIONE', 3, 1, 3, 'rozwiazanie.pdf', 'Kilka błędów w obliczeniach');
 INSERT INTO Task_Student (id, status, task_id, student_id, points, filename) VALUES (4, 'OCENIONE', 4, 1, 5, 'zadania.pdf');
+INSERT INTO Task_Student (id, status, task_id, student_id, points, filename) VALUES (5, 'WYKONANE', 5, 1, null, 'kowalski2.zip');
+
 
 

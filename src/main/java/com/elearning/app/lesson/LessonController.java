@@ -107,7 +107,7 @@ public class LessonController {
             } else if (status == TaskStudentStatus.WYKONANE) {
                 taskToDo.setIcon("done");
             }
-        } else if (task.getEndDate().before(new Date())) {
+        } else if (task.getEndDate().after(new Date())) {
             taskToDo.setStatus(TaskStudentStatus.AKTYWNE);
             taskToDo.setIcon("alarm");
         } else {
