@@ -48,6 +48,11 @@ public class LessonController {
         return materialRepository.findAllByLessonId(lessonId);
     }
 
+    @GetMapping("/lessons/{lessonId}")
+    public Lesson getLesson(@PathVariable Long lessonId) {
+        return repository.findById(lessonId).get();
+    }
+
     @GetMapping(path = "/materials/{id}/download")
     public ResponseEntity<Resource> downloadMaterial(@PathVariable Long id) throws IOException {
         Material material = materialRepository.findById(id).get();
