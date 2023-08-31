@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -38,8 +37,8 @@ public class ExamController {
 //        return repository.findAll();
 //    }
 
-    @GetMapping("/exam/{id}")
-    public ExamDetailsResponse getExam(@PathVariable Long id) {
+    @GetMapping("/exam/{id}/active-exam")
+    public ExamDetailsResponse getActiveExamWithQuestions(@PathVariable Long id) {
         Optional<Exam> optionalExam = repository.findById(id);
 
         if (optionalExam.isPresent()) {
@@ -48,9 +47,7 @@ public class ExamController {
             ExamDetailsResponse response = new ExamDetailsResponse();
 
             //Id i nazwa testu
-            ExamDetailsExamResponse examResponse = new ExamDetailsExamResponse();
-            examResponse.setId(optionalExam.get().getId());
-            examResponse.setName(optionalExam.get().getName());
+            ExamDetailsExamResponse examResponse = getExamDetailsExamResponse(optionalExam);
 
             //lista pytań
             List<Question> questions = optionalExam.get().getQuestions();
@@ -89,8 +86,37 @@ public class ExamController {
         return null;
     }
 
+    @GetMapping("/exam/{id}/details")
+    public ExamDetailsResponse getExamDetails(@PathVariable Long id) {
+        Optional<Exam> optionalExam = repository.findById(id);
+
+        if (optionalExam.isPresent()) {
+            //odpowiedz zawierajaca wszystkie dane wymagane przez ExamDetails
+
+            ExamDetailsResponse response = new ExamDetailsResponse();
+            ExamDetailsExamResponse examResponse = getExamDetailsExamResponse(optionalExam);
+
+            response.setExam(examResponse);
+
+            return response;
+        }
+
+        return null;
+    }
+
+    private ExamDetailsExamResponse getExamDetailsExamResponse(Optional<Exam> optionalExam) {
+        //Id i nazwa testu
+        ExamDetailsExamResponse examResponse = new ExamDetailsExamResponse();
+        Exam exam = optionalExam.get();
+        examResponse.setId(exam.getId());
+        examResponse.setName(exam.getName());
+        examResponse.setStartDate(exam.getStartDate());
+        examResponse.setEndDate(exam.getEndDate());
+        return examResponse;
+    }
+
     @PostMapping("/course/{courseId}/exam")
-    public void addExam (@PathVariable Long courseId, @RequestBody AddExamRequest request) {
+    public void addExam(@PathVariable Long courseId, @RequestBody AddExamRequest request) {
         Exam exam = new Exam();
         exam.setName(request.getName());
         exam.setDescription(request.getDescription());
@@ -116,7 +142,7 @@ public class ExamController {
 
     // zabezpieczyc przed nieprawidlowym id exam
     @PostMapping("/exam/{id}/finish")
-    public void finishExam (@PathVariable Long id, @RequestBody List<ExamFinishRequest> body) {
+    public void finishExam(@PathVariable Long id, @RequestBody List<ExamFinishRequest> body) {
         Double points = 0.0;
         for (ExamFinishRequest examFinishRequest : body) {
             Long questionId = examFinishRequest.getQuestionId();
@@ -124,7 +150,7 @@ public class ExamController {
             Question questionFromDB = exam.getQuestions().stream().filter(question -> question.getId().equals(questionId))
                     .findFirst().get();
 
-            if(questionFromDB.getQuestionType() == QuestionType.ONE_CHOICE) {
+            if (questionFromDB.getQuestionType() == QuestionType.ONE_CHOICE) {
                 Long chosenAnswerId = Long.parseLong(examFinishRequest.getAnswers().toString());
                 Long correctAnswer = questionFromDB.getAnswers().stream().filter(answer -> answer.isCorrect())
                         .findFirst().get().getId();

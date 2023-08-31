@@ -5,17 +5,21 @@ import com.elearning.app.question.Question;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
 public class Exam {
 
     @Id
-    @SequenceGenerator(name = "ExamSequenceForId", sequenceName = "exam_id_seq",  initialValue = 50)
+    @SequenceGenerator(name = "ExamSequenceForId", sequenceName = "exam_id_seq", initialValue = 50)
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "ExamSequenceForId")
     private Long id;
     private String name;
     private String description;
+    private LocalDate startDate;
+    private LocalDate endDate;
+    private Integer maxMinutes;
     @OneToMany(mappedBy = "exam")
     @JsonIgnore
     private List<Question> questions;
@@ -62,5 +66,29 @@ public class Exam {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+    }
+
+    public Integer getMaxMinutes() {
+        return maxMinutes;
+    }
+
+    public void setMaxMinutes(Integer maxMinutes) {
+        this.maxMinutes = maxMinutes;
     }
 }

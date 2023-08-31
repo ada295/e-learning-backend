@@ -28,7 +28,8 @@ INSERT INTO CALENDAR_EVENT(ID, DAY, MONTH, YEAR, HOUR, MINUTES, DESCRIPTION, TYP
             VALUES(3, 24, 5, 2023, 16, 30, 'Wywiadówka', 'OTHER', 4);
 
 
-Insert into Exam (id, name, course_id) values (1, 'Test zaliczeniowy - semestr 1', 1);
+Insert into Exam (id, name, course_id, start_date, end_date, max_minutes) values (1, 'Test zaliczeniowy - semestr 1', 1, '2023-10-15 10:30:00',
+                                               '2023-10-15 11:30:00' , 45);
 
 Insert into Question (id, content, points, exam_id, question_type) values (1, 'Ile to 2+3?',1,1, 'ONE_CHOICE');
 
@@ -80,11 +81,13 @@ INSERT INTO Task (id, description, end_date, lesson_id) VALUES (4, 'Przeczytaj r
 INSERT INTO Task (id, description, end_date, lesson_id) VALUES (5, 'Rozwiąż ćwiczenia z programowania dynamicznego', '2023-08-23',  1);
 INSERT INTO Task (id, description, end_date, lesson_id) VALUES (6, 'Zaprojektuj interfejs użytkownika dla aplikacji mobilnej', '2024-01-25',  1);
 
-INSERT INTO Task_Student (id, status, task_id, student_id, points, filename, comment) VALUES (1, 'OCENIONE', 1, 1, 4, 'rozwiazanie.txt', 'Drobne błędy stylistyczne.');
-INSERT INTO Task_Student (id, status, task_id, student_id, points, filename) VALUES (2, 'WYKONANE', 2, 1, null, 'kowalski.zip');
-INSERT INTO Task_Student (id, status, task_id, student_id, points, filename, comment) VALUES (3, 'OCENIONE', 3, 1, 3, 'rozwiazanie.pdf', 'Kilka błędów w obliczeniach');
-INSERT INTO Task_Student (id, status, task_id, student_id, points, filename) VALUES (4, 'OCENIONE', 4, 1, 5, 'zadania.pdf');
-INSERT INTO Task_Student (id, status, task_id, student_id, points, filename) VALUES (5, 'WYKONANE', 5, 1, null, 'kowalski2.zip');
+INSERT INTO Task_Student (id, status, task_id, student_id, filename) VALUES (1, 'OCENIONE', 1, 1, 'rozwiazanie.txt');
+INSERT INTO GRADE (id, category, value, comment, task_student_id) VALUES (1, 'Zadanie', 5, 'Wszystko poprawnie rozwiązane!', 1);
+
+INSERT INTO Task_Student (id, status, task_id, student_id, filename) VALUES (2, 'WYKONANE', 2, 1, 'kowalski.zip');
+INSERT INTO Task_Student (id, status, task_id, student_id, filename) VALUES (3, 'OCENIONE', 3, 1, 'rozwiazanie.pdf');
+INSERT INTO Task_Student (id, status, task_id, student_id, filename) VALUES (4, 'OCENIONE', 4, 1, 'zadania.pdf');
+INSERT INTO Task_Student (id, status, task_id, student_id, filename) VALUES (5, 'WYKONANE', 5, 1, 'kowalski2.zip');
 
 
 

@@ -4,6 +4,8 @@ import com.elearning.app.user.Student;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 public class TaskStudent {
 
@@ -20,9 +22,9 @@ public class TaskStudent {
     @JoinColumn(name = "student_id", nullable = false)
     @JsonIgnore
     private Student student;
-    private Long points;
     private String filename;
-    private String comment;
+    @OneToOne(mappedBy = "taskStudent")
+    private Grade grade;
 
     public TaskStudent() {
     }
@@ -59,14 +61,6 @@ public class TaskStudent {
         this.student = student;
     }
 
-    public Long getPoints() {
-        return points;
-    }
-
-    public void setPoints(Long points) {
-        this.points = points;
-    }
-
     public String getFilename() {
         return filename;
     }
@@ -75,11 +69,11 @@ public class TaskStudent {
         this.filename = filename;
     }
 
-    public String getComment() {
-        return comment;
+    public Grade getGrade() {
+        return grade;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    public void setGrade(Grade grade) {
+        this.grade = grade;
     }
 }
