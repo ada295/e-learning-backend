@@ -1,9 +1,13 @@
 package com.elearning.app.teacher;
 
 
+import com.elearning.app.user.UserAccount;
+import com.elearning.app.user.UserRepository;
+import com.elearning.app.user.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -11,18 +15,10 @@ import java.util.List;
 public class TeacherController {
 
     @Autowired
-    private TeacherRepository repository;
+    private UserRepository repository;
 
     @GetMapping("/teachers")
-    public List<Teacher> getTeachers(){
-        return repository.findAll();
+    public List<UserAccount> getTeachers(){
+        return repository.findAllByRoles(Collections.singletonList(UserRole.TEACHER));
     }
-
-    @PostMapping("/teachers")
-    public void addTeacher (@RequestBody Teacher teacher) {
-        teacher.setId(null);
-        repository.save(teacher);
-    }
-
-
 }

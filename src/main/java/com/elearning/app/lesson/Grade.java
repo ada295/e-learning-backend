@@ -1,7 +1,7 @@
 package com.elearning.app.lesson;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+import javax.persistence.*;
 
 @Entity
 public class Grade {
@@ -13,7 +13,7 @@ public class Grade {
     private Double value;
     private String category;
     @OneToOne
-    @JoinColumn(name = "task_student_id")
+    @JoinColumn(name = "task_owner_id")
     @JsonIgnore
     private TaskStudent taskStudent;
     private String comment;

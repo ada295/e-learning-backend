@@ -1,8 +1,8 @@
 package com.elearning.app.lesson;
 
 
-import com.elearning.app.user.Student;
-import com.elearning.app.user.StudentRepository;
+import com.elearning.app.user.UserAccount;
+import com.elearning.app.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -34,7 +34,7 @@ public class LessonController {
     @Autowired
     private TaskRepository taskRepository;
     @Autowired
-    private StudentRepository studentRepository;
+    private UserRepository userRepository;
     @Autowired
     private TaskStudentRepository taskStudentRepository;
 
@@ -101,7 +101,7 @@ public class LessonController {
         taskToDo.setTask(task);
 
         Optional<TaskStudent> taskStudent = task.getTaskStudents().stream()
-                .filter(e -> e.getStudent() != null && studentId.equals(e.getStudent().getId())).findFirst();
+                .filter(e -> e.getOwner() != null && studentId.equals(e.getOwner().getId())).findFirst();
 
         if (taskStudent.isPresent()) {
             taskToDo.setTaskStudent(taskStudent.get());
@@ -166,7 +166,7 @@ public class LessonController {
     public ResponseEntity uploadTaskSolutionFile(@RequestParam(required = false) MultipartFile file, @PathVariable Long taskId)
             throws IOException {
         Long studentId = 1L;
-        Student student = studentRepository.findById(studentId).get();
+        UserAccount student = userRepository.findById(studentId).get();
 
         Task task = taskRepository.findById(taskId).get();
         String filename = file.getOriginalFilename();
@@ -181,7 +181,7 @@ public class LessonController {
         }
 
         TaskStudent taskStudent = new TaskStudent();
-        taskStudent.setStudent(student);
+        taskStudent.setOwner(student);
         taskStudent.setStatus(TaskStudentStatus.WYKONANE);
         taskStudent.setTask(task);
         taskStudent.setFilename(filename);
@@ -194,7 +194,7 @@ public class LessonController {
     @GetMapping(path = "/tasks-solution/{id}/download")
     public ResponseEntity<Resource> downloadTaskSolution(@PathVariable Long id) throws IOException {
         Long studentId = 1L;
-        Student student = studentRepository.findById(studentId).get();
+        UserAccount student = userRepository.findById(studentId).get();
 
         TaskStudent taskStudent = taskStudentRepository.findById(id).get();
         String filename = taskStudent.getFilename();

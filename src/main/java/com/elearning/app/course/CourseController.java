@@ -6,10 +6,8 @@ import com.elearning.app.responses.coursedetails.CourseDetailsCourseResponse;
 import com.elearning.app.responses.coursedetails.CourseDetailsExamResponse;
 import com.elearning.app.responses.coursedetails.CourseDetailsLessonResponse;
 import com.elearning.app.responses.coursedetails.CourseDetailsResponse;
-import com.elearning.app.teacher.Teacher;
-import com.elearning.app.teacher.TeacherRepository;
-import org.apache.tomcat.util.http.parser.Authorization;
-import org.apache.tomcat.websocket.AuthenticatorFactory;
+import com.elearning.app.user.UserAccount;
+import com.elearning.app.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +25,7 @@ public class CourseController {
     private CourseRepository courseRepository;
 
     @Autowired
-    private TeacherRepository teacherRepository;
+    private UserRepository userRepository;
 
     @GetMapping("/courses")
     public List<Course> getCourses() {
@@ -93,20 +91,20 @@ public class CourseController {
     @PostMapping("/courses")
     public ResponseEntity addCourse(@RequestBody Course course) {
         //kto dodal ten kurs bedzie okreslone po zrobieniu logowania
-        Teacher teacher = teacherRepository.findById(1L).get();
+        UserAccount teacher = userRepository.findById(1L).get();
 
         String name = course.getName();
 
         Optional<Course> optionalCourse = teacher.getCourses().stream()
-                .filter(e-> e.getName().equals(name))
+                .filter(e -> e.getName().equals(name))
                 .findFirst();
 
-        if(optionalCourse.isPresent()) {
+        if (optionalCourse.isPresent()) {
             return new ResponseEntity("Kurs z podaną nazwą już istnieje!", HttpStatus.BAD_REQUEST);
         }
 
         course.setId(null);
-        course.setTeacher(teacher);
+        course.setOwner(teacher);
         course = courseRepository.save(course);
         teacher.getCourses().add(course);
 

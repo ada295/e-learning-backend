@@ -1,7 +1,7 @@
 package com.elearning.app;
 
 import com.elearning.app.lesson.Lesson;
-import jakarta.persistence.*;
+import javax.persistence.*;
 
 @Entity
 @SequenceGenerator(name = "calendar_event_id_gen", sequenceName = "calendar_event_id_gen", initialValue = 50)

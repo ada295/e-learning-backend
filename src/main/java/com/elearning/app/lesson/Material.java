@@ -1,7 +1,7 @@
 package com.elearning.app.lesson;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+import javax.persistence.*;
 
 @Entity
 public class Material {

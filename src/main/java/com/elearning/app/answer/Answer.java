@@ -2,7 +2,7 @@ package com.elearning.app.answer;
 
 import com.elearning.app.question.Question;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+import javax.persistence.*;
 
 @Entity
 public class Answer {

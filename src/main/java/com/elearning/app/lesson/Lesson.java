@@ -3,7 +3,7 @@ package com.elearning.app.lesson;
 import com.elearning.app.CalendarEvent;
 import com.elearning.app.course.Course;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+import javax.persistence.*;
 
 import java.util.List;
 

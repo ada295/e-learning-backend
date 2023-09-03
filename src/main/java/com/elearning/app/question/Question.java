@@ -3,7 +3,7 @@ package com.elearning.app.question;
 import com.elearning.app.answer.Answer;
 import com.elearning.app.exam.Exam;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+import javax.persistence.*;
 
 import java.util.List;
 

@@ -1,12 +1,15 @@
 package com.elearning.app.lesson;
 
-import com.elearning.app.user.Student;
+import com.elearning.app.user.UserAccount;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.util.List;
+import javax.persistence.*;
 
 @Entity
+@Getter
+@Setter
 public class TaskStudent {
 
     @Id
@@ -19,61 +22,13 @@ public class TaskStudent {
     @JsonIgnore
     private Task task;
     @ManyToOne
-    @JoinColumn(name = "student_id", nullable = false)
+    @JoinColumn(name = "owner_id", nullable = false)
     @JsonIgnore
-    private Student student;
+    private UserAccount owner;
     private String filename;
     @OneToOne(mappedBy = "taskStudent")
     private Grade grade;
 
     public TaskStudent() {
-    }
-
-    public TaskStudentStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(TaskStudentStatus status) {
-        this.status = status;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Task getTask() {
-        return task;
-    }
-
-    public void setTask(Task task) {
-        this.task = task;
-    }
-
-    public Student getStudent() {
-        return student;
-    }
-
-    public void setStudent(Student student) {
-        this.student = student;
-    }
-
-    public String getFilename() {
-        return filename;
-    }
-
-    public void setFilename(String filename) {
-        this.filename = filename;
-    }
-
-    public Grade getGrade() {
-        return grade;
-    }
-
-    public void setGrade(Grade grade) {
-        this.grade = grade;
     }
 }
