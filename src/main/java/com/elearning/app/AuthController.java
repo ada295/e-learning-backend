@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -73,6 +74,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
+    @RolesAllowed({"ADMIN"})
     public ResponseEntity<?> registerUser(@RequestBody UserAccountRequest user, @RequestParam UserRole role) {
         Map<String, Object> responseMap = new HashMap<>();
         user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
