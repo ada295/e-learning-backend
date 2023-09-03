@@ -53,6 +53,7 @@ public class AuthController {
                 responseMap.put("error", false);
                 responseMap.put("message", "Logged In");
                 responseMap.put("token", token);
+                responseMap.put("role", userDetails.getAuthorities());
                 responseMap.put("email", user.getEmail());
                 responseMap.put("expiresIn", jwtTokenUtil.getExpirationDateFromToken(token));
                 return ResponseEntity.ok(responseMap);
