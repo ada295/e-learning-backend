@@ -2,9 +2,10 @@ package com.elearning.app.lesson;
 
 import com.elearning.app.CalendarEvent;
 import com.elearning.app.course.Course;
+import com.elearning.app.exam.Exam;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import javax.persistence.*;
 
+import javax.persistence.*;
 import java.util.List;
 
 @Entity
@@ -23,6 +24,10 @@ public class Lesson {
 
     @OneToMany
     private List<Material> materials;
+
+    @OneToOne(mappedBy = "lesson")
+    @JsonIgnore
+    private Exam exam;
 
     public Lesson() {
 
@@ -79,5 +84,13 @@ public class Lesson {
 
     public void setMaterials(List<Material> materials) {
         this.materials = materials;
+    }
+
+    public Exam getExam() {
+        return exam;
+    }
+
+    public void setExam(Exam exam) {
+        this.exam = exam;
     }
 }

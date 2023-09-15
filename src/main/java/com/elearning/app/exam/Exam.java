@@ -1,10 +1,10 @@
 package com.elearning.app.exam;
 
-import com.elearning.app.course.Course;
+import com.elearning.app.lesson.Lesson;
 import com.elearning.app.question.Question;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import javax.persistence.*;
 
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -23,10 +23,10 @@ public class Exam {
     @OneToMany(mappedBy = "exam")
     @JsonIgnore
     private List<Question> questions;
-    @ManyToOne
-    @JoinColumn(name = "course_id", nullable = false)
+    @OneToOne
+    @JoinColumn(name = "lesson_id", nullable = false)
     @JsonIgnore
-    private Course course;
+    private Lesson lesson;
 
     public List<Question> getQuestions() {
         return questions;
@@ -34,14 +34,6 @@ public class Exam {
 
     public void setQuestions(List<Question> questions) {
         this.questions = questions;
-    }
-
-    public Course getCourse() {
-        return course;
-    }
-
-    public void setCourse(Course course) {
-        this.course = course;
     }
 
     public Long getId() {
@@ -90,5 +82,13 @@ public class Exam {
 
     public void setMaxMinutes(Integer maxMinutes) {
         this.maxMinutes = maxMinutes;
+    }
+
+    public Lesson getLesson() {
+        return lesson;
+    }
+
+    public void setLesson(Lesson lesson) {
+        this.lesson = lesson;
     }
 }

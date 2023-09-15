@@ -1,6 +1,5 @@
 package com.elearning.app.course;
 
-import com.elearning.app.exam.Exam;
 import com.elearning.app.lesson.Lesson;
 import com.elearning.app.user.UserAccount;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -27,9 +26,6 @@ public class Course {
     private List<Lesson> lessons;
 
     //    private List<Student> students;
-    @OneToMany(mappedBy = "course")
-    @JsonIgnore
-    private List<Exam> exams;
 
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)

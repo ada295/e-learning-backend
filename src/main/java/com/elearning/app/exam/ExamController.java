@@ -3,8 +3,9 @@ package com.elearning.app.exam;
 
 import com.elearning.app.answer.Answer;
 import com.elearning.app.answer.AnswerRepository;
-import com.elearning.app.course.Course;
 import com.elearning.app.course.CourseRepository;
+import com.elearning.app.lesson.Lesson;
+import com.elearning.app.lesson.LessonRepository;
 import com.elearning.app.question.Question;
 import com.elearning.app.question.QuestionRepository;
 import com.elearning.app.question.QuestionType;
@@ -27,6 +28,8 @@ public class ExamController {
     private ExamRepository repository;
     @Autowired
     private CourseRepository courseRepository;
+    @Autowired
+    private LessonRepository lessonRepository;
     @Autowired
     private QuestionRepository questionRepository;
     @Autowired
@@ -115,13 +118,13 @@ public class ExamController {
         return examResponse;
     }
 
-    @PostMapping("/course/{courseId}/exam")
-    public void addExam(@PathVariable Long courseId, @RequestBody AddExamRequest request) {
+    @PostMapping("/lesson/{lessonId}/exam")
+    public void addExam(@PathVariable Long lessonId, @RequestBody AddExamRequest request) {
         Exam exam = new Exam();
         exam.setName(request.getName());
         exam.setDescription(request.getDescription());
-        Optional<Course> byId = courseRepository.findById(courseId);
-        exam.setCourse(byId.get());
+        Optional<Lesson> byId = lessonRepository.findById(lessonId);
+        exam.setLesson(byId.get());
         exam = repository.save(exam);
         for (AddExamQuestionRequest requestQuestion : request.getQuestions()) {
             Question question = new Question();

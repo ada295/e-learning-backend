@@ -39,7 +39,7 @@ INSERT INTO CALENDAR_EVENT(ID, DAY, MONTH, YEAR, HOUR, MINUTES, DESCRIPTION, TYP
             VALUES(3, 24, 5, 2023, 16, 30, 'Wywiadówka', 'OTHER', 4);
 
 
-Insert into Exam (id, name, course_id, start_date, end_date, max_minutes) values (1, 'Test zaliczeniowy - semestr 1', 1, '2023-10-15 10:30:00',
+Insert into Exam (id, name, lesson_id, start_date, end_date, max_minutes) values (1, 'Test zaliczeniowy - semestr 1', 1, '2023-10-15 10:30:00',
                                                '2023-10-15 11:30:00' , 45);
 
 Insert into Question (id, content, points, exam_id, question_type) values (1, 'Ile to 2+3?',1,1, 'ONE_CHOICE');

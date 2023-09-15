@@ -1,9 +1,7 @@
 package com.elearning.app.course;
 
-import com.elearning.app.exam.Exam;
 import com.elearning.app.lesson.Lesson;
 import com.elearning.app.responses.coursedetails.CourseDetailsCourseResponse;
-import com.elearning.app.responses.coursedetails.CourseDetailsExamResponse;
 import com.elearning.app.responses.coursedetails.CourseDetailsLessonResponse;
 import com.elearning.app.responses.coursedetails.CourseDetailsResponse;
 import com.elearning.app.user.UserAccount;
@@ -58,16 +56,6 @@ public class CourseController {
                 lessonResponses.add(lessonResponse);
             }
 
-            //lista exams
-            List<Exam> exams = optionalCourse.get().getExams();
-            List<CourseDetailsExamResponse> examResponses = new ArrayList<>();
-            for (Exam exam : exams) {
-                CourseDetailsExamResponse examResponse = new CourseDetailsExamResponse();
-                examResponse.setId(exam.getId());
-                examResponse.setName(exam.getName());
-                examResponses.add(examResponse);
-            }
-
             //lista studentow
 //            List<Student> students = optionalCourse.get().get();
 //            List<Student> lessonResponses = new ArrayList<>();
@@ -80,7 +68,6 @@ public class CourseController {
 
             response.setCourse(courseResponse);
             response.setLessons(lessonResponses);
-            response.setExams(examResponses);
 
             return response;
         }
