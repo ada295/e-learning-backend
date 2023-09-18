@@ -3,7 +3,6 @@ package com.elearning.app;
 import com.elearning.app.user.UserAccount;
 import com.elearning.app.user.UserAccountRequest;
 import com.elearning.app.user.UserRepository;
-import com.elearning.app.user.UserRole;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.http.ResponseEntity;
@@ -11,14 +10,14 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.security.RolesAllowed;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 @RestController
 @RequestMapping("/auth")
@@ -75,20 +74,36 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    @RolesAllowed({"ADMIN"})
-    public ResponseEntity<?> registerUser(@RequestBody UserAccountRequest user, @RequestParam UserRole role) {
+    public ResponseEntity<?> registerUser(@RequestBody UserAccountRequest user) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.getAuthorities().stream().noneMatch(e -> e.getAuthority().equals("ADMIN"))) {
+            return ResponseEntity.status(403).build();
+        }
+        String password = generatePassword();
         Map<String, Object> responseMap = new HashMap<>();
-        user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
-        user.setRoles(Collections.singleton(role));
+        user.setPassword(new BCryptPasswordEncoder().encode(password));
 
         UserAccount userAccount = getUser(user);
         String token = jwtTokenUtil.generateToken(userAccount);
         userRepository.save(userAccount);
         responseMap.put("error", false);
         responseMap.put("email", user.getEmail());
+        responseMap.put("password", password);
         responseMap.put("message", "Account created successfully");
         responseMap.put("token", token);
         return ResponseEntity.ok(responseMap);
+    }
+
+    private String generatePassword() {
+        int leftLimit = 97; // letter 'a'
+        int rightLimit = 122; // letter 'z'
+        int targetStringLength = 10;
+        Random random = new Random();
+
+        return random.ints(leftLimit, rightLimit + 1)
+                .limit(targetStringLength)
+                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                .toString();
     }
 
     private UserAccount getUser(UserAccountRequest user) {
