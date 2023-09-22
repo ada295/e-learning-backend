@@ -39,7 +39,7 @@ public class LessonController {
     private TaskStudentRepository taskStudentRepository;
 
     @GetMapping("/lessons")
-    public List<Lesson> getLessonsByCourseId(@RequestParam Long courseId) {
+    public List<Lesson> getLessonsByCourseId(@RequestParam Long courseId){
         return repository.findAllByCourseId(courseId);
     }
 
