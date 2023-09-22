@@ -50,7 +50,7 @@ public class ExamController {
             ExamDetailsResponse response = new ExamDetailsResponse();
 
             //Id i nazwa testu
-            ExamDetailsExamResponse examResponse = getExamDetailsExamResponse(optionalExam);
+            ExamDetailsExamResponse examResponse = getExamDetailsExamResponse(optionalExam.get());
 
             //lista pytań
             List<Question> questions = optionalExam.get().getQuestions();
@@ -89,15 +89,15 @@ public class ExamController {
         return null;
     }
 
-    @GetMapping("/exam/{id}/details")
+    @GetMapping("/lesson/{id}/details")
     public ExamDetailsResponse getExamDetails(@PathVariable Long id) {
-        Optional<Exam> optionalExam = repository.findById(id);
+        Optional<Lesson> lesson = lessonRepository.findById(id);
 
-        if (optionalExam.isPresent()) {
+        if (lesson.isPresent() && lesson.get().getExam() != null) {
             //odpowiedz zawierajaca wszystkie dane wymagane przez ExamDetails
 
             ExamDetailsResponse response = new ExamDetailsResponse();
-            ExamDetailsExamResponse examResponse = getExamDetailsExamResponse(optionalExam);
+            ExamDetailsExamResponse examResponse = getExamDetailsExamResponse(lesson.get().getExam());
 
             response.setExam(examResponse);
 
@@ -107,10 +107,9 @@ public class ExamController {
         return null;
     }
 
-    private ExamDetailsExamResponse getExamDetailsExamResponse(Optional<Exam> optionalExam) {
+    private ExamDetailsExamResponse getExamDetailsExamResponse(Exam exam) {
         //Id i nazwa testu
         ExamDetailsExamResponse examResponse = new ExamDetailsExamResponse();
-        Exam exam = optionalExam.get();
         examResponse.setId(exam.getId());
         examResponse.setName(exam.getName());
         examResponse.setStartDate(exam.getStartDate());
