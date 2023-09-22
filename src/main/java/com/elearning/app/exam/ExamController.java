@@ -89,7 +89,7 @@ public class ExamController {
         return null;
     }
 
-    @GetMapping("/lesson/{id}/details")
+    @GetMapping("/lesson/{id}/exam-details")
     public ExamDetailsResponse getExamDetails(@PathVariable Long id) {
         Optional<Lesson> lesson = lessonRepository.findById(id);
 
