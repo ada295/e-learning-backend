@@ -200,7 +200,7 @@ public class ExamController {
             answer.setOpenQuestionAnswerPoints(studentAnswer.getOpenQuestionAnswerPoints());
             answers.add(answer);
         }
-        examResultResponse.setStudentAnswers(answers);
+        examResultResponse.setQuestions(answers);
 
 
         return examResultResponse;

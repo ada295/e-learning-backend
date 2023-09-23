@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 @Setter
 public class ExamResultResponse {
-    private List<QuestionStudentAnswerResponse> studentAnswers;
+    private List<QuestionStudentAnswerResponse> questions;
     private Exam exam;
     private UserAccount student;
     private Double points;
