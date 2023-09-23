@@ -3,6 +3,7 @@ package com.elearning.app.answer;
 import com.elearning.app.question.Question;
 import com.elearning.app.question.QuestionStudentAnswer;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,6 +13,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@EqualsAndHashCode
 public class Answer {
 
     @Id

@@ -6,10 +6,7 @@ import com.elearning.app.answer.AnswerRepository;
 import com.elearning.app.course.CourseRepository;
 import com.elearning.app.lesson.Lesson;
 import com.elearning.app.lesson.LessonRepository;
-import com.elearning.app.question.Question;
-import com.elearning.app.question.QuestionRepository;
-import com.elearning.app.question.QuestionStudentAnswer;
-import com.elearning.app.question.QuestionType;
+import com.elearning.app.question.*;
 import com.elearning.app.responses.examdetails.ExamDetailsAnswerResponse;
 import com.elearning.app.responses.examdetails.ExamDetailsExamResponse;
 import com.elearning.app.responses.examdetails.ExamDetailsQuestionResponse;
@@ -21,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
@@ -148,7 +146,7 @@ public class ExamController {
 
     // zabezpieczyc przed nieprawidlowym id exam
     @PostMapping("/exam/{id}/finish")
-    public ExamResult finishExam(@PathVariable Long id, @RequestBody List<ExamFinishRequest> body) {
+    public ExamResultResponse finishExam(@PathVariable Long id, @RequestBody List<ExamFinishRequest> body) {
         ExamResult examResult = new ExamResult();
         Exam exam = repository.findById(id).get();
         examResult.setExam(exam);
@@ -183,11 +181,83 @@ public class ExamController {
             questionStudentAnswer.setExamResult(examResult);
         }
 
-        return examResultRepository.save(examResult);
+        ExamResult saved = examResultRepository.save(examResult);
+        return buildExamResultResponse(saved);
     }
 
-    private Double sumPoints() {
+    private ExamResultResponse buildExamResultResponse(ExamResult saved) {
+        ExamResultResponse examResultResponse = new ExamResultResponse();
+        examResultResponse.setExam(saved.getExam());
+        examResultResponse.setPoints(sumPoints(saved));
+        examResultResponse.setMaxPoints(sumMaxPoints(saved.getExam()));
+        examResultResponse.setStudent(saved.getStudent());
+        List<QuestionStudentAnswerResponse> answers = new ArrayList<>();
+        for (QuestionStudentAnswer studentAnswer : saved.getStudentAnswers()) {
+            QuestionStudentAnswerResponse answer = new QuestionStudentAnswerResponse();
+            answer.setStudentAnswers(studentAnswer.getStudentAnswers());
+            answer.setQuestion(studentAnswer.getQuestion());
+            answer.setOpenQuestionAnswer(studentAnswer.getOpenQuestionAnswer());
+            answer.setOpenQuestionAnswerPoints(studentAnswer.getOpenQuestionAnswerPoints());
+            answers.add(answer);
+        }
+        examResultResponse.setStudentAnswers(answers);
 
-        return null;
+
+        return examResultResponse;
+    }
+
+    private Double sumMaxPoints(Exam exam) {
+        Integer pointsRes = 0;
+        List<Integer> points = exam.getQuestions().stream().map(Question::getPoints)
+                .collect(Collectors.toList());
+        for (Integer point : points) {
+            pointsRes += point;
+        }
+        return pointsRes * 1.0;
+    }
+
+    private Double sumPoints(ExamResult saved) {
+        Double points = 0.0;
+        for (QuestionStudentAnswer studentAnswer : saved.getStudentAnswers()) {
+            List<Answer> studentAnswers = studentAnswer.getStudentAnswers();
+            QuestionType questionType = studentAnswer.getQuestion().getQuestionType();
+            if (questionType == QuestionType.OPEN) {
+                Double openQuestionAnswerPoints = studentAnswer.getOpenQuestionAnswerPoints();
+                if (openQuestionAnswerPoints != null) {
+                    points += openQuestionAnswerPoints;
+                }
+            } else {
+                Integer questionPoints = studentAnswer.getQuestion().getPoints();
+                if (questionType == QuestionType.ONE_CHOICE) {
+                    if (studentAnswers.size() != 0) {
+                        Answer answer = studentAnswer.getStudentAnswers().get(0);
+                        if (answer.isCorrect()) {
+                            points += questionPoints;
+                        }
+                    }
+                } else if (questionType == QuestionType.MULTI_CHOICE) {
+                    int notCorrectStudentAnswers = 0;
+                    List<Answer> correctAnswers = studentAnswer.getQuestion().getAnswers().stream().filter(Answer::isCorrect).toList();
+                    for (Answer questionAnswer : studentAnswer.getQuestion().getAnswers()) {
+                        if (!questionAnswer.isCorrect() && studentAnswers.contains(questionAnswer)) {
+                            notCorrectStudentAnswers++;
+                        } else if (questionAnswer.isCorrect() && !studentAnswers.contains(questionAnswer)) {
+                            notCorrectStudentAnswers++;
+                        }
+                    }
+                    int amountOfCorrectAnswers = correctAnswers.size();
+
+                    if (amountOfCorrectAnswers == 0 && studentAnswers.size() == 0) {
+                        points += questionPoints;
+                    } else if (notCorrectStudentAnswers == 0) {
+                        points += questionPoints;
+                    } else {
+                        double ratio = (studentAnswer.getQuestion().getAnswers().size() - notCorrectStudentAnswers) * 1.0 / studentAnswer.getQuestion().getAnswers().size() * 1.0;
+                        points += questionPoints * 1.0 * ratio;
+                    }
+                }
+            }
+        }
+        return points;
     }
 }

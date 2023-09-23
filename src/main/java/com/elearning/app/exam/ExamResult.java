@@ -1,6 +1,7 @@
 package com.elearning.app.exam;
 
 import com.elearning.app.question.QuestionStudentAnswer;
+import com.elearning.app.user.UserAccount;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,4 +24,7 @@ public class ExamResult {
     @ManyToOne
     @JoinColumn(name = "exam_id", nullable = false)
     private Exam exam;
+    @ManyToOne
+    @JoinColumn(name = "student_id")
+    private UserAccount student;
 }
