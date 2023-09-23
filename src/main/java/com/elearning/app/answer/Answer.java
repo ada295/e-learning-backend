@@ -1,10 +1,17 @@
 package com.elearning.app.answer;
 
 import com.elearning.app.question.Question;
+import com.elearning.app.question.QuestionStudentAnswer;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
+@Getter
+@Setter
 public class Answer {
 
     @Id
@@ -18,6 +25,14 @@ public class Answer {
     @JoinColumn(name = "question_id", nullable = false)
     @JsonIgnore
     private Question question;
+
+    @ManyToMany
+    @JoinTable(
+            name = "answer_student_answer",
+            joinColumns = @JoinColumn(name = "answer_id"),
+            inverseJoinColumns = @JoinColumn(name = "question_student_answer_id"))
+    @JsonIgnore
+    private List<QuestionStudentAnswer> questionStudentAnswers;
 
     public Long getId() {
         return id;

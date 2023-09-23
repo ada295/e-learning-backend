@@ -3,12 +3,16 @@ package com.elearning.app.exam;
 import com.elearning.app.lesson.Lesson;
 import com.elearning.app.question.Question;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
 
 @Entity
+@Getter
+@Setter
 public class Exam {
 
     @Id
@@ -23,6 +27,9 @@ public class Exam {
     @OneToMany(mappedBy = "exam")
     @JsonIgnore
     private List<Question> questions;
+    @OneToMany(mappedBy = "exam")
+    @JsonIgnore
+    private List<ExamResult> examResults;
     @OneToOne
     @JoinColumn(name = "lesson_id", nullable = false)
     @JsonIgnore

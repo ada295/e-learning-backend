@@ -8,6 +8,7 @@ import com.elearning.app.lesson.Lesson;
 import com.elearning.app.lesson.LessonRepository;
 import com.elearning.app.question.Question;
 import com.elearning.app.question.QuestionRepository;
+import com.elearning.app.question.QuestionStudentAnswer;
 import com.elearning.app.question.QuestionType;
 import com.elearning.app.responses.examdetails.ExamDetailsAnswerResponse;
 import com.elearning.app.responses.examdetails.ExamDetailsExamResponse;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,6 +28,8 @@ public class ExamController {
 
     @Autowired
     private ExamRepository repository;
+    @Autowired
+    private ExamResultRepository examResultRepository;
     @Autowired
     private CourseRepository courseRepository;
     @Autowired
@@ -144,26 +148,46 @@ public class ExamController {
 
     // zabezpieczyc przed nieprawidlowym id exam
     @PostMapping("/exam/{id}/finish")
-    public void finishExam(@PathVariable Long id, @RequestBody List<ExamFinishRequest> body) {
-        Double points = 0.0;
+    public ExamResult finishExam(@PathVariable Long id, @RequestBody List<ExamFinishRequest> body) {
+        ExamResult examResult = new ExamResult();
+        Exam exam = repository.findById(id).get();
+        examResult.setExam(exam);
+        List<QuestionStudentAnswer> studentAnswers = new ArrayList<>();
+        examResult.setStudentAnswers(studentAnswers);
+
         for (ExamFinishRequest examFinishRequest : body) {
             Long questionId = examFinishRequest.getQuestionId();
-            Exam exam = repository.findById(id).get();
+            QuestionStudentAnswer questionStudentAnswer = new QuestionStudentAnswer();
+            studentAnswers.add(questionStudentAnswer);
+
             Question questionFromDB = exam.getQuestions().stream().filter(question -> question.getId().equals(questionId))
                     .findFirst().get();
-
-            if (questionFromDB.getQuestionType() == QuestionType.ONE_CHOICE) {
+            questionStudentAnswer.setQuestion(questionFromDB);
+            if (questionFromDB.getQuestionType() == QuestionType.OPEN) {
+                questionStudentAnswer.setOpenQuestionAnswer(examFinishRequest.getAnswers().toString());
+            } else if (questionFromDB.getQuestionType() == QuestionType.ONE_CHOICE) {
                 Long chosenAnswerId = Long.parseLong(examFinishRequest.getAnswers().toString());
-                Long correctAnswer = questionFromDB.getAnswers().stream().filter(answer -> answer.isCorrect())
-                        .findFirst().get().getId();
-                if (chosenAnswerId.equals(correctAnswer)) {
-                    points += questionFromDB.getPoints();
+                Answer answer = answerRepository.findById(chosenAnswerId).get();
+                questionStudentAnswer.setStudentAnswers(Arrays.asList(answer));
+            } else if (questionFromDB.getQuestionType() == QuestionType.MULTI_CHOICE) {
+                List<Long> answersIds = examFinishRequest.getAnswersIds();
+                List<Answer> chosenAnswers = new ArrayList<>();
+                for (int i = 0; i < answersIds.size(); i++) {
+                    List answers = (List) examFinishRequest.getAnswers();
+                    if (answers.get(i).equals(Boolean.TRUE)) {
+                        chosenAnswers.add(answerRepository.findById(answersIds.get(i)).get());
+                    }
                 }
+                questionStudentAnswer.setStudentAnswers(chosenAnswers);
             }
-
+            questionStudentAnswer.setExamResult(examResult);
         }
 
+        return examResultRepository.save(examResult);
+    }
 
-        System.out.println(body);
+    private Double sumPoints() {
+
+        return null;
     }
 }
