@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -34,7 +35,7 @@ public class Answer {
             joinColumns = @JoinColumn(name = "answer_id"),
             inverseJoinColumns = @JoinColumn(name = "question_student_answer_id"))
     @JsonIgnore
-    private List<QuestionStudentAnswer> questionStudentAnswers;
+    private List<QuestionStudentAnswer> questionStudentAnswers = new ArrayList<>();
 
     public Long getId() {
         return id;

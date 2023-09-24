@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -25,9 +26,9 @@ public class QuestionStudentAnswer {
     @JoinColumn(name = "exam_result_id")
     @JsonIgnore
     private ExamResult examResult;
-    @ManyToMany(mappedBy = "questionStudentAnswers")
+    @ManyToMany(mappedBy = "questionStudentAnswers", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JsonIgnore
-    private List<Answer> studentAnswers;
+    private List<Answer> studentAnswers = new ArrayList<>();
     private String openQuestionAnswer;
     private Double openQuestionAnswerPoints;
 }
