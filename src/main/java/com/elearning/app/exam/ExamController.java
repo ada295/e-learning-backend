@@ -167,13 +167,25 @@ public class ExamController {
 
     // zabezpieczyc przed nieprawidlowym id exam
     @PostMapping("/exam/{id}/finish")
-    public ExamResultResponse finishExam(@PathVariable Long id, @RequestBody List<ExamFinishRequest> body) {
-        UserAccount userAccount = getUserAccount();
+    public ResponseEntity<ExamResultResponse> finishExam(@PathVariable Long id, @RequestBody List<ExamFinishRequest> body) {
+        UserAccount loggedUser = getUserAccount();
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.getAuthorities().stream().noneMatch(e -> e.getAuthority().equals("STUDENT"))) {
+            return ResponseEntity.status(403).build();
+        }
+
+        Optional<ExamResult> examResultOptional = lessonRepository.findById(id).get().getExam().getExamResults()
+                .stream().filter(e -> e.getStudent().equals(loggedUser)).findFirst();
+
+        if (examResultOptional.isPresent()) {
+            return ResponseEntity.status(400).build();
+        }
 
         ExamResult examResult = new ExamResult();
         Exam exam = repository.findById(id).get();
         examResult.setExam(exam);
-        examResult.setStudent(userAccount);
+        examResult.setStudent(loggedUser);
         List<QuestionStudentAnswer> studentAnswers = new ArrayList<>();
 
         for (ExamFinishRequest examFinishRequest : body) {
@@ -187,9 +199,13 @@ public class ExamController {
             if (questionFromDB.getQuestionType() == QuestionType.OPEN) {
                 questionStudentAnswer.setOpenQuestionAnswer(examFinishRequest.getAnswers().toString());
             } else if (questionFromDB.getQuestionType() == QuestionType.ONE_CHOICE) {
-                Long chosenAnswerId = Long.parseLong(examFinishRequest.getAnswers().toString());
-                Answer answer = answerRepository.findById(chosenAnswerId).get();
-                questionStudentAnswer.setStudentAnswers(Arrays.asList(answer));
+                Object answers = examFinishRequest.getAnswers();
+                if (answers != null && !answers.toString().equalsIgnoreCase("")) {
+                    Long chosenAnswerId = Long.parseLong(answers.toString());
+                    Answer answer = answerRepository.findById(chosenAnswerId).get();
+                    questionStudentAnswer.setStudentAnswers(Arrays.asList(answer));
+                    answer.getQuestionStudentAnswers().add(questionStudentAnswer);
+                }
             } else if (questionFromDB.getQuestionType() == QuestionType.MULTI_CHOICE) {
                 List<Long> answersIds = examFinishRequest.getAnswersIds();
                 List<Answer> chosenAnswers = new ArrayList<>();
@@ -209,7 +225,7 @@ public class ExamController {
         examResult.setStudentAnswers(studentAnswers);
 
         ExamResult saved = examResultRepository.save(examResult);
-        return buildExamResultResponse(saved);
+        return ResponseEntity.ok(buildExamResultResponse(saved));
     }
 
     private UserAccount getUserAccount() {
