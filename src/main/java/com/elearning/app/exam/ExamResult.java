@@ -18,6 +18,7 @@ public class ExamResult {
     @SequenceGenerator(name = "ExamResultGenId", sequenceName = "exam_result_id_seq", initialValue = 50)
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "ExamResultGenId")
     private Long id;
+    private String status = "NOT_CHECKED_BY_TEACHER";
     @OneToMany(mappedBy = "examResult", cascade = CascadeType.PERSIST)
     @JsonIgnore
     private List<QuestionStudentAnswer> studentAnswers;
@@ -27,4 +28,8 @@ public class ExamResult {
     @ManyToOne
     @JoinColumn(name = "student_id")
     private UserAccount student;
+    @ManyToOne
+    @JoinColumn(name = "teacher_id")
+    private UserAccount teacher;
+
 }

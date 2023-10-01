@@ -6,9 +6,13 @@ import com.elearning.app.responses.coursedetails.CourseDetailsLessonResponse;
 import com.elearning.app.responses.coursedetails.CourseDetailsResponse;
 import com.elearning.app.user.UserAccount;
 import com.elearning.app.user.UserRepository;
+import com.elearning.app.user.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -25,9 +29,19 @@ public class CourseController {
     @Autowired
     private UserRepository userRepository;
 
+    private UserAccount getUserAccount() {
+        User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserAccount userAccount = userRepository.findByEmail(principal.getUsername()).get();
+        return userAccount;
+    }
+
     @GetMapping("/courses")
     public List<Course> getCourses() {
-        // TODO: 05/02/2023 nalezy zmienic zwracane wartosci, chcemy zwrocic tylko nazwy kursow 
+        UserAccount loggedUser = getUserAccount();
+        if(loggedUser.getRoles().contains(UserRole.TEACHER)) {
+            return loggedUser.getCourses();
+        }
+
         return courseRepository.findAll();
     }
 

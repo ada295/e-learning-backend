@@ -40,5 +40,8 @@ public class UserAccount {
     private List<TaskStudent> tasksStudent;
     @OneToMany(mappedBy = "student")
     @JsonIgnore
-    private List<ExamResult> examResults;
+    private List<ExamResult> myExamResults;
+    @OneToMany(mappedBy = "teacher")
+    @JsonIgnore
+    private List<ExamResult> examResultsToCheck;
 }

@@ -45,14 +45,10 @@ public class ExamController {
     @Autowired
     private UserRepository userRepository;
 
-//    @GetMapping("/exam")
-//    public List<ExamDetailsExamResponse> getExams () {
-//        return repository.findAll();
-//    }
-
-    @GetMapping("/exam/{id}/active-exam")
-    public ExamDetailsResponse getActiveExamWithQuestions(@PathVariable Long id) {
-        Optional<Exam> optionalExam = repository.findById(id);
+    @GetMapping("/exam/{lessonId}/active-exam")
+    public ExamDetailsResponse getActiveExamWithQuestions(@PathVariable Long lessonId) {
+        Lesson lesson = lessonRepository.findById(lessonId).get();
+        Optional<Exam> optionalExam = Optional.of(lesson.getExam());
 
         if (optionalExam.isPresent()) {
             //odpowiedz zawierajaca wszystkie dane wymagane przez ExamDetails
@@ -165,6 +161,36 @@ public class ExamController {
         return ResponseEntity.ok(buildExamResultResponse(examResult));
     }
 
+    @GetMapping("/teacher-exam-results/{lessonId}")
+    public ResponseEntity<List<ExamResultResponse>> getResultsExams(@PathVariable Long lessonId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.getAuthorities().stream().noneMatch(e -> e.getAuthority().equals("TEACHER"))) {
+            return ResponseEntity.status(403).build();
+        }
+
+        List<ExamResultResponse> response = new ArrayList<>();
+
+        UserAccount loggedUser = getUserAccount();
+        List<ExamResult> examResults = lessonRepository.findById(lessonId).get().getExam().getExamResults()
+                .stream().filter(e -> e.getTeacher().equals(loggedUser)).collect(Collectors.toList());
+        for (ExamResult examResult : examResults) {
+            ExamResultResponse examResultResponse = buildExamResultResponse(examResult);
+            response.add(examResultResponse);
+        }
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/teacher-exam-results/{examResultId}/details")
+    public ResponseEntity<ExamResultResponse> getResultExamDetailsForTeacher(@PathVariable Long examResultId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.getAuthorities().stream().noneMatch(e -> e.getAuthority().equals("TEACHER"))) {
+            return ResponseEntity.status(403).build();
+        }
+        ExamResult examResult = examResultRepository.findById(examResultId).get();
+        ExamResultResponse examResultResponse = buildExamResultResponse(examResult);
+        return ResponseEntity.ok(examResultResponse);
+    }
+
     // zabezpieczyc przed nieprawidlowym id exam
     @PostMapping("/exam/{id}/finish")
     public ResponseEntity<ExamResultResponse> finishExam(@PathVariable Long id, @RequestBody List<ExamFinishRequest> body) {
@@ -186,6 +212,7 @@ public class ExamController {
         Exam exam = repository.findById(id).get();
         examResult.setExam(exam);
         examResult.setStudent(loggedUser);
+        examResult.setTeacher(exam.getLesson().getCourse().getOwner());
         List<QuestionStudentAnswer> studentAnswers = new ArrayList<>();
 
         for (ExamFinishRequest examFinishRequest : body) {
@@ -236,8 +263,10 @@ public class ExamController {
 
     private ExamResultResponse buildExamResultResponse(ExamResult saved) {
         ExamResultResponse examResultResponse = new ExamResultResponse();
+        examResultResponse.setExamResultId(saved.getId());
         examResultResponse.setExam(saved.getExam());
         examResultResponse.setPoints(sumPoints(saved));
+        examResultResponse.setStatus(saved.getStatus());
         examResultResponse.setMaxPoints(sumMaxPoints(saved.getExam()));
         examResultResponse.setStudent(saved.getStudent());
         List<QuestionStudentAnswerResponse> answers = new ArrayList<>();
