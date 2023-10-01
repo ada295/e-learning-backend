@@ -14,16 +14,14 @@ import com.elearning.app.responses.examdetails.ExamDetailsResponse;
 import com.elearning.app.user.UserAccount;
 import com.elearning.app.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -125,6 +123,10 @@ public class ExamController {
 
     @PostMapping("/lesson/{lessonId}/exam")
     public void addExam(@PathVariable Long lessonId, @RequestBody AddExamRequest request) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.getAuthorities().stream().noneMatch(e -> e.getAuthority().equals("TEACHER"))) {
+            return;
+        }
         Exam exam = new Exam();
         exam.setName(request.getName());
         exam.setDescription(request.getDescription());
@@ -146,6 +148,43 @@ public class ExamController {
                 answerRepository.save(answer);
             }
         }
+    }
+
+    @PostMapping("/exam-result/{examResultId}/question/{questionId}")
+    public ResponseEntity updatePointsForOpenQuestion(@PathVariable Long examResultId, @PathVariable Long questionId, @RequestBody Map<String, String> body) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.getAuthorities().stream().noneMatch(e -> e.getAuthority().equals("TEACHER"))) {
+            return ResponseEntity.status(403).build();
+        }
+
+        ExamResult examResult = examResultRepository.findById(examResultId).get();
+        List<QuestionStudentAnswer> studentAnswers = examResult.getStudentAnswers();
+        QuestionStudentAnswer questionStudentAnswer = studentAnswers.stream().filter(e -> e.getQuestion().getId().equals(questionId)).findFirst().get();
+        Double points = Double.valueOf(body.get("points"));
+        if (points < 0 || points > questionStudentAnswer.getQuestion().getPoints()) {
+            return ResponseEntity.status(400).build();
+        }
+        questionStudentAnswer.setOpenQuestionAnswerPoints(points);
+        examResultRepository.save(examResult);
+
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @PostMapping("/exam-result/{examResultId}")
+    public ResponseEntity finishAndCloseExamResult(@PathVariable Long examResultId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.getAuthorities().stream().noneMatch(e -> e.getAuthority().equals("TEACHER"))) {
+            return ResponseEntity.status(403).build();
+        }
+
+        ExamResult examResult = examResultRepository.findById(examResultId).get();
+        examResult.getStudentAnswers().stream().filter(e -> e.getQuestion().getQuestionType() == QuestionType.OPEN)
+                .filter(e -> e.getOpenQuestionAnswerPoints() == null)
+                .forEach(e -> e.setOpenQuestionAnswerPoints(0.0));
+        examResult.setStatus("CHECKED_BY_TEACHER");
+        examResultRepository.save(examResult);
+
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @GetMapping("/exam-result/{lessonId}")
