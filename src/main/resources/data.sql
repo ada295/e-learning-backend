@@ -14,11 +14,11 @@ INSERT INTO USER_ROLE(USER_ACCOUNT_ID, ROLE) VALUES (6,'STUDENT');
 INSERT INTO USER_ACCOUNT (id, first_name, last_name, email, password) VALUES (7, 'Anna', 'Nowak', 'anna@nowak.pl', '$2a$12$7JcVsDkBms70UZ/6icSeNOAuNuOyHjJKv1bkmj7rvVRCVdFl5hREW');
 INSERT INTO USER_ROLE(USER_ACCOUNT_ID, ROLE) VALUES (7,'STUDENT');
 
-INSERT INTO COURSE(ID, NAME, DESCRIPTION, FINISHED, owner_id) VALUES(1, 'Fizyka', 'Kurs z fizyki - poziom podstawowy', 1, 1);
-INSERT INTO COURSE(ID, NAME, DESCRIPTION, FINISHED, owner_id) VALUES(2, 'Matematyka', 'Kurs z matematyki - poziom podstawowy', 1, 1);
-INSERT INTO COURSE(ID, NAME, DESCRIPTION, FINISHED, owner_id) VALUES(3, 'Biologia', 'Kurs z bilogii - poziom rozszerzony', 0, 1);
-INSERT INTO COURSE(ID, NAME, DESCRIPTION, FINISHED, owner_id) VALUES(4, 'Chemia', 'Kurs z chemii - poziom rozszerzony', 0, 1);
-INSERT INTO COURSE(ID, NAME, DESCRIPTION, FINISHED, owner_id) VALUES(5, 'Informatyka', 'Kurs z informatyki - poziom podstawowy', 1, 1);
+INSERT INTO COURSE(ID, NAME, DESCRIPTION, FINISHED, owner_id, access_code) VALUES(1, 'Fizyka', 'Kurs z fizyki - poziom podstawowy', 1, 1, 'Sa342S@ykU');
+INSERT INTO COURSE(ID, NAME, DESCRIPTION, FINISHED, owner_id, access_code) VALUES(2, 'Matematyka', 'Kurs z matematyki - poziom podstawowy', 1, 1, 'zoI78ddS_25');
+INSERT INTO COURSE(ID, NAME, DESCRIPTION, FINISHED, owner_id, access_code) VALUES(3, 'Biologia', 'Kurs z bilogii - poziom rozszerzony', 0, 1, '12kypoWsxj');
+INSERT INTO COURSE(ID, NAME, DESCRIPTION, FINISHED, owner_id, access_code) VALUES(4, 'Chemia', 'Kurs z chemii - poziom rozszerzony', 0, 1, 'PsSKt221LX');
+INSERT INTO COURSE(ID, NAME, DESCRIPTION, FINISHED, owner_id, access_code) VALUES(5, 'Informatyka', 'Kurs z informatyki - poziom podstawowy', 1, 1, 'X8uIddQsf');
 
 INSERT INTO LESSON VALUES(1, 'Lekcja numer 1', 1);
 INSERT INTO LESSON VALUES(2, 'Lekcja numer 2', 1);

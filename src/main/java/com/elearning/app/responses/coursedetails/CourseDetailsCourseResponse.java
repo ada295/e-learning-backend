@@ -4,6 +4,7 @@ public class CourseDetailsCourseResponse {
     private Long id;
     private String name;
     private String description;
+    private String accessCode;
     private boolean finished;
 
     public Long getId() {
@@ -36,5 +37,13 @@ public class CourseDetailsCourseResponse {
 
     public void setFinished(boolean finished) {
         this.finished = finished;
+    }
+
+    public String getAccessCode() {
+        return accessCode;
+    }
+
+    public void setAccessCode(String accessCode) {
+        this.accessCode = accessCode;
     }
 }

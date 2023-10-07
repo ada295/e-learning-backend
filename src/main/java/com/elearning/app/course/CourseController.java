@@ -10,6 +10,7 @@ import com.elearning.app.responses.coursedetails.CourseDetailsResponse;
 import com.elearning.app.user.UserAccount;
 import com.elearning.app.user.UserRepository;
 import com.elearning.app.user.UserRole;
+import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -53,6 +54,7 @@ public class CourseController {
         return courseRepository.findAll();
     }
 
+
     @GetMapping("/courses/{id}")
     public CourseDetailsResponse getCourse(@PathVariable Long id) {
         Optional<Course> optionalCourse = courseRepository.findById(id);
@@ -65,6 +67,7 @@ public class CourseController {
             courseResponse.setId(optionalCourse.get().getId());
             courseResponse.setDescription(optionalCourse.get().getDescription());
             courseResponse.setName(optionalCourse.get().getName());
+            courseResponse.setAccessCode(optionalCourse.get().getAccessCode());
             courseResponse.setFinished(optionalCourse.get().isFinished());
 
             //lista lekcji
@@ -112,8 +115,7 @@ public class CourseController {
 
     @PostMapping("/courses")
     public ResponseEntity addCourse(@RequestBody Course course) {
-        //kto dodal ten kurs bedzie okreslone po zrobieniu logowania
-        UserAccount teacher = userRepository.findById(1L).get();
+        UserAccount teacher = getUserAccount();
 
         String name = course.getName();
 
@@ -126,6 +128,7 @@ public class CourseController {
         }
 
         course.setId(null);
+        course.setAccessCode(generateCourseCode());
         course.setOwner(teacher);
         course = courseRepository.save(course);
         teacher.getCourses().add(course);
@@ -156,5 +159,23 @@ public class CourseController {
         announcementRepository.delete(announcement);
 
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
+    @PostMapping("/courses/{id}/regenerate-access-code")
+    public ResponseEntity regenerateAccessCode(@PathVariable Long id) {
+        Course course = courseRepository.findById(id).get();
+        course.setAccessCode(generateCourseCode());
+        courseRepository.save(course);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    private String generateCourseCode() {
+        String code = "";
+        do {
+            code = RandomString.make(15);
+        } while (courseRepository.findByAccessCode(code).isPresent());
+
+        return code;
     }
 }
