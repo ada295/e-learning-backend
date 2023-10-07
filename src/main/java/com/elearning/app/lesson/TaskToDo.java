@@ -5,6 +5,7 @@ public class TaskToDo {
     private TaskStudent taskStudent;
     private TaskStudentStatus status;
     private String icon;
+    private Double grade;
 
     public TaskToDo() {
     }
@@ -39,5 +40,13 @@ public class TaskToDo {
 
     public void setIcon(String icon) {
         this.icon = icon;
+    }
+
+    public Double getGrade() {
+        return grade;
+    }
+
+    public void setGrade(Double grade) {
+        this.grade = grade;
     }
 }

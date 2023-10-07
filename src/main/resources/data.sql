@@ -20,6 +20,10 @@ INSERT INTO COURSE(ID, NAME, DESCRIPTION, FINISHED, owner_id, access_code) VALUE
 INSERT INTO COURSE(ID, NAME, DESCRIPTION, FINISHED, owner_id, access_code) VALUES(4, 'Chemia', 'Kurs z chemii - poziom rozszerzony', 0, 1, 'PsSKt221LX');
 INSERT INTO COURSE(ID, NAME, DESCRIPTION, FINISHED, owner_id, access_code) VALUES(5, 'Informatyka', 'Kurs z informatyki - poziom podstawowy', 1, 1, 'X8uIddQsf');
 
+INSERT INTO STUDENT_COURSES(student_id, courses_as_student_id) VALUES (3, 1);
+INSERT INTO STUDENT_COURSES(student_id, courses_as_student_id) VALUES (4, 1);
+INSERT INTO STUDENT_COURSES(student_id, courses_as_student_id) VALUES (5, 1);
+
 INSERT INTO LESSON VALUES(1, 'Lekcja numer 1', 1);
 INSERT INTO LESSON VALUES(2, 'Lekcja numer 2', 1);
 INSERT INTO LESSON VALUES(3, 'Lekcja numer 3', 1);

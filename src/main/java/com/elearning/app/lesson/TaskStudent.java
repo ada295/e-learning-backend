@@ -10,10 +10,11 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
+@SequenceGenerator(name = "TaskStudent_gen", sequenceName = "TaskStudent_gen", initialValue = 50)
 public class TaskStudent {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "TaskStudent_gen")
     private Long id;
     @Enumerated(value = EnumType.STRING)
     private TaskStudentStatus status;

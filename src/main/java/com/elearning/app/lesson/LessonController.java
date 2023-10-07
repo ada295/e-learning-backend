@@ -3,8 +3,10 @@ package com.elearning.app.lesson;
 
 import com.elearning.app.course.Course;
 import com.elearning.app.course.CourseRepository;
+import com.elearning.app.responses.coursedetails.CourseDetailsStudentResponse;
 import com.elearning.app.user.UserAccount;
 import com.elearning.app.user.UserRepository;
+import com.elearning.app.user.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -22,10 +24,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
@@ -95,6 +94,33 @@ public class LessonController {
         return tasksToDo;
     }
 
+    @GetMapping(path = "/tasks/{taskId}/student-tasks-solutions")
+    public List<StudentTaskSolution> getTaskSolutions(@PathVariable Long taskId) {
+        User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserAccount userAccount = userRepository.findByEmail(principal.getUsername()).get();
+        Long studentId = userAccount.getId();
+        if (!userAccount.getRoles().contains(UserRole.TEACHER)) {
+            return new ArrayList<>();
+        }
+
+        List<StudentTaskSolution> result = new ArrayList<>();
+        Task task = taskRepository.findById(taskId).get();
+        Set<UserAccount> students = task.getLesson().getCourse().getStudents();
+        for (UserAccount student : students) {
+            TaskToDo taskToDo = buildTaskToDo(task, student.getId());
+            CourseDetailsStudentResponse studentResponse = new CourseDetailsStudentResponse();
+            studentResponse.setFirstName(student.getFirstName());
+            studentResponse.setEmail(student.getEmail());
+            studentResponse.setLastName(student.getLastName());
+            StudentTaskSolution studentTaskSolution = new StudentTaskSolution();
+            studentTaskSolution.setTask(taskToDo);
+            studentTaskSolution.setStudent(studentResponse);
+            result.add(studentTaskSolution);
+        }
+
+        return result;
+    }
+
     @GetMapping(path = "/student-tasks/{taskId}")
     public TaskToDo getTaskToDo(@PathVariable Long taskId) {
         User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -135,6 +161,12 @@ public class LessonController {
     @PostMapping(path = "/lessons/{lessonId}/materials")
     public ResponseEntity<Material> saveMaterial(@PathVariable Long lessonId, @RequestBody Material material)
             throws IOException {
+        User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserAccount userAccount = userRepository.findByEmail(principal.getUsername()).get();
+        Long studentId = userAccount.getId();
+        if (!userAccount.getRoles().contains(UserRole.TEACHER)) {
+            return ResponseEntity.badRequest().body(null);
+        }
         Lesson lesson = repository.findById(lessonId).get();
         material.setId(null);
         material.setLesson(lesson);
@@ -157,6 +189,12 @@ public class LessonController {
     @PostMapping(path = "/courses/{courseId}/lessons")
     public ResponseEntity<Lesson> saveLesson(@PathVariable Long courseId, @RequestBody Lesson lesson)
             throws IOException {
+        User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserAccount userAccount = userRepository.findByEmail(principal.getUsername()).get();
+        Long studentId = userAccount.getId();
+        if (!userAccount.getRoles().contains(UserRole.TEACHER)) {
+            return ResponseEntity.badRequest().body(null);
+        }
         Course course = courseRepository.findById(courseId).get();
         lesson.setId(null);
         lesson.setCourse(course);
@@ -169,6 +207,13 @@ public class LessonController {
     @PostMapping(path = "/materials/{materialId}/upload")
     public ResponseEntity uploadFile(@RequestParam(required = false) MultipartFile file, @PathVariable Long materialId)
             throws IOException {
+        User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserAccount userAccount = userRepository.findByEmail(principal.getUsername()).get();
+        Long studentId = userAccount.getId();
+        if (!userAccount.getRoles().contains(UserRole.TEACHER)) {
+            return ResponseEntity.badRequest().body(null);
+        }
+
         Material material = materialRepository.findById(materialId).get();
         String filename = material.getFilename();
 
@@ -183,6 +228,39 @@ public class LessonController {
 
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping(path = "/tasks/{taskId}/upload-solution")
+    public ResponseEntity uploadTaskSolution(@RequestParam(required = false) MultipartFile file, @PathVariable Long taskId)
+            throws IOException {
+        User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserAccount userAccount = userRepository.findByEmail(principal.getUsername()).get();
+        Long studentId = userAccount.getId();
+        if (!userAccount.getRoles().contains(UserRole.STUDENT)) {
+            return ResponseEntity.badRequest().body(null);
+        }
+
+        Task task = taskRepository.findById(taskId).get();
+        String filename = file.getOriginalFilename();
+        TaskStudent taskStudent = new TaskStudent();
+        taskStudent.setFilename(filename);
+        taskStudent.setStatus(TaskStudentStatus.WYKONANE);
+        taskStudent.setTask(task);
+        taskStudent.setOwner(userAccount);
+
+        taskStudentRepository.save(taskStudent);
+
+        try {
+            File fileTmp = new File("C:\\Users\\user\\Desktop\\Dokumenty\\tasks\\" + task.getId() + "\\students\\" + studentId + "\\" + filename);
+            File directory = new File("C:\\Users\\user\\Desktop\\Dokumenty\\tasks\\" + task.getId() + "\\students\\" + studentId);
+            directory.mkdirs();
+            Files.copy(file.getInputStream(), fileTmp.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+
+        return ResponseEntity.ok().build();
+    }
+
 
     @PostMapping(path = "/tasks/{taskId}/upload")
     public ResponseEntity uploadTaskSolutionFile(@RequestParam(required = false) MultipartFile file, @PathVariable Long taskId)
@@ -246,6 +324,15 @@ public class LessonController {
         User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         UserAccount userAccount = userRepository.findByEmail(principal.getUsername()).get();
         Long studentId = userAccount.getId();
-        taskStudentRepository.deleteById(id);
+        if (!userAccount.getRoles().contains(UserRole.STUDENT)) {
+            return;
+        }
+
+        TaskStudent taskStudent = taskStudentRepository.findById(id).get();
+        if (taskStudent.getOwner().equals(userAccount)) {
+            taskStudentRepository.delete(taskStudent);
+            File file = new File("C:\\Users\\user\\Desktop\\Dokumenty\\task_solutions\\" + taskStudent.getTask().getId() + "\\" + studentId + "\\" + taskStudent.getFilename());
+            file.delete();
+        }
     }
 }
