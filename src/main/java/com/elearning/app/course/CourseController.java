@@ -3,6 +3,7 @@ package com.elearning.app.course;
 import com.elearning.app.announcement.Announcement;
 import com.elearning.app.announcement.AnnouncementRepository;
 import com.elearning.app.lesson.Grade;
+import com.elearning.app.lesson.GradeRepository;
 import com.elearning.app.lesson.Lesson;
 import com.elearning.app.responses.GradebookResponse;
 import com.elearning.app.responses.coursedetails.*;
@@ -31,6 +32,9 @@ public class CourseController {
     private CourseRepository courseRepository;
 
     @Autowired
+    private GradeRepository gradeRepository;
+
+    @Autowired
     private AnnouncementRepository announcementRepository;
 
     @Autowired
@@ -50,6 +54,20 @@ public class CourseController {
         }
 
         return courseRepository.findAll().stream().filter(c -> c.getStudents().contains(loggedUser)).collect(Collectors.toList());
+    }
+
+    @PostMapping("/courses/{id}/add-grade/{studentId}")
+    public void addGrade(@PathVariable Long id, @RequestBody Grade grade, @PathVariable Long studentId) {
+        UserAccount loggedUser = getUserAccount();
+        if(!loggedUser.getRoles().contains(UserRole.TEACHER)) {
+            return;
+        }
+        Course course = courseRepository.findById(id).get();
+        UserAccount userAccount = userRepository.findById(studentId).get();
+        grade.getCourses().add(course);
+        grade.setStudent(userAccount);
+        grade = gradeRepository.save(grade);
+        course.getGrades().add(grade);
     }
 
     @GetMapping("/courses/{id}/grades")
