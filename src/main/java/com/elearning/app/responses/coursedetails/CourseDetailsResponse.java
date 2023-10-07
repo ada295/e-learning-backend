@@ -6,6 +6,7 @@ public class CourseDetailsResponse {
     private CourseDetailsCourseResponse course;
     private List<CourseDetailsExamResponse> exams;
     private List<CourseDetailsLessonResponse> lessons;
+    private List<CourseDetailsAnnouncementResponse> announcements;
     private List<CourseDetailsStudentResponse> students;
 
     public CourseDetailsCourseResponse getCourse() {
@@ -38,5 +39,13 @@ public class CourseDetailsResponse {
 
     public void setExams(List<CourseDetailsExamResponse> exams) {
         this.exams = exams;
+    }
+
+    public List<CourseDetailsAnnouncementResponse> getAnnouncements() {
+        return announcements;
+    }
+
+    public void setAnnouncements(List<CourseDetailsAnnouncementResponse> announcements) {
+        this.announcements = announcements;
     }
 }

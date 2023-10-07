@@ -9,14 +9,15 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
+@SequenceGenerator(name = "lesson_id_gen", sequenceName = "lesson_id_gen", initialValue = 50)
 public class Lesson {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "lesson_id_gen")
     private Long id;
     private String name;
 
     @ManyToOne
     @JoinColumn(name = "course_id", nullable = false)
-
     private Course course;
 
     @OneToMany

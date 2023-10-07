@@ -1,5 +1,6 @@
 package com.elearning.app.course;
 
+import com.elearning.app.announcement.Announcement;
 import com.elearning.app.lesson.Lesson;
 import com.elearning.app.user.UserAccount;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -25,6 +26,10 @@ public class Course {
     @JsonIgnore
     private List<Lesson> lessons;
 
+    @OneToMany(mappedBy = "course")
+    @JsonIgnore
+    private List<Announcement> announcements;
+
     //    private List<Student> students;
 
     @ManyToOne
@@ -33,12 +38,5 @@ public class Course {
 
     public Course() {
 
-    }
-
-    public Course(Long id, String name, String description, boolean finished) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.finished = finished;
     }
 }

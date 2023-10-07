@@ -1,6 +1,8 @@
 package com.elearning.app.lesson;
 
 
+import com.elearning.app.course.Course;
+import com.elearning.app.course.CourseRepository;
 import com.elearning.app.user.UserAccount;
 import com.elearning.app.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,6 +33,8 @@ public class LessonController {
 
     @Autowired
     private LessonRepository repository;
+    @Autowired
+    private CourseRepository courseRepository;
     @Autowired
     private MaterialRepository materialRepository;
     @Autowired
@@ -75,7 +81,9 @@ public class LessonController {
 
     @GetMapping(path = "/lessons/{lessonId}/student-tasks")
     public List<TaskToDo> getTasksToDo(@PathVariable Long lessonId) {
-        Long studentId = 1L; //jak bedzie logowanie to automatycznie
+        User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserAccount userAccount = userRepository.findByEmail(principal.getUsername()).get();
+        Long studentId = userAccount.getId();
 
         List<TaskToDo> tasksToDo = new ArrayList<>();
         List<Task> allByLessonId = taskRepository.findAllByLessonId(lessonId);
@@ -89,7 +97,9 @@ public class LessonController {
 
     @GetMapping(path = "/student-tasks/{taskId}")
     public TaskToDo getTaskToDo(@PathVariable Long taskId) {
-        Long studentId = 1L; //jak bedzie logowanie to automatycznie
+        User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserAccount userAccount = userRepository.findByEmail(principal.getUsername()).get();
+        Long studentId = userAccount.getId();
 
         Task task = taskRepository.findById(taskId).get();
 
@@ -144,6 +154,18 @@ public class LessonController {
         return new ResponseEntity<>(task, HttpStatus.OK);
     }
 
+    @PostMapping(path = "/courses/{courseId}/lessons")
+    public ResponseEntity<Lesson> saveLesson(@PathVariable Long courseId, @RequestBody Lesson lesson)
+            throws IOException {
+        Course course = courseRepository.findById(courseId).get();
+        lesson.setId(null);
+        lesson.setCourse(course);
+        lesson = repository.save(lesson);
+        course.getLessons().add(lesson);
+
+        return new ResponseEntity<>(lesson, HttpStatus.OK);
+    }
+
     @PostMapping(path = "/materials/{materialId}/upload")
     public ResponseEntity uploadFile(@RequestParam(required = false) MultipartFile file, @PathVariable Long materialId)
             throws IOException {
@@ -165,7 +187,9 @@ public class LessonController {
     @PostMapping(path = "/tasks/{taskId}/upload")
     public ResponseEntity uploadTaskSolutionFile(@RequestParam(required = false) MultipartFile file, @PathVariable Long taskId)
             throws IOException {
-        Long studentId = 1L;
+        User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserAccount userAccount = userRepository.findByEmail(principal.getUsername()).get();
+        Long studentId = userAccount.getId();
         UserAccount student = userRepository.findById(studentId).get();
 
         Task task = taskRepository.findById(taskId).get();
@@ -193,7 +217,9 @@ public class LessonController {
 
     @GetMapping(path = "/tasks-solution/{id}/download")
     public ResponseEntity<Resource> downloadTaskSolution(@PathVariable Long id) throws IOException {
-        Long studentId = 1L;
+        User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserAccount userAccount = userRepository.findByEmail(principal.getUsername()).get();
+        Long studentId = userAccount.getId();
         UserAccount student = userRepository.findById(studentId).get();
 
         TaskStudent taskStudent = taskStudentRepository.findById(id).get();
@@ -217,7 +243,9 @@ public class LessonController {
 
     @DeleteMapping(path = "/student-tasks/{id}/delete")
     public void deleteTaskSolution(@PathVariable Long id) {
-        Long studentId = 1L;
+        User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserAccount userAccount = userRepository.findByEmail(principal.getUsername()).get();
+        Long studentId = userAccount.getId();
         taskStudentRepository.deleteById(id);
     }
 }

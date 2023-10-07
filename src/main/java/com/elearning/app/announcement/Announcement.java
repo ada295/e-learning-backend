@@ -1,17 +1,29 @@
 package com.elearning.app.announcement;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
+import com.elearning.app.course.Course;
+import lombok.Getter;
+import lombok.Setter;
 
+import javax.persistence.*;
+import java.time.LocalDate;
+import java.util.Date;
+
+@Entity
+@Getter
+@Setter
 public class Announcement {
 
     @Id
     @SequenceGenerator(name = "AnnouncementSequenceForId", sequenceName = "announcement_id_seq",  initialValue = 50)
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "AnnouncementSequenceForId")
     private Long id;
-    private String content;
+    private String name;
+    private String description;
+    private LocalDate date;
+
+    @ManyToOne
+    @JoinColumn(name = "course_id", nullable = false)
+    private Course course;
 
     public Long getId() {
         return id;
@@ -21,11 +33,11 @@ public class Announcement {
         this.id = id;
     }
 
-    public String getContent() {
-        return content;
+    public String getDescription() {
+        return description;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setDescription(String content) {
+        this.description = content;
     }
 }
