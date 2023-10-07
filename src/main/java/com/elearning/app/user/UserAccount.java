@@ -10,6 +10,8 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -44,4 +46,12 @@ public class UserAccount {
     @OneToMany(mappedBy = "teacher")
     @JsonIgnore
     private List<ExamResult> examResultsToCheck;
+
+    @ManyToMany
+    @JoinTable(
+            name = "student_courses",
+            joinColumns = @JoinColumn(name = "student_id"),
+            inverseJoinColumns = @JoinColumn(name = "courses_as_student_id"))
+    @JsonIgnore
+    private Set<Course> coursesAsStudent = new HashSet<>();
 }

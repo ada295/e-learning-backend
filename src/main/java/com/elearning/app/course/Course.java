@@ -8,7 +8,10 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -31,7 +34,9 @@ public class Course {
     @JsonIgnore
     private List<Announcement> announcements;
 
-    //    private List<Student> students;
+    @ManyToMany(mappedBy = "coursesAsStudent", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    @JsonIgnore
+    private Set<UserAccount> students = new HashSet<>();
 
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)

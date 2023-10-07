@@ -3,10 +3,7 @@ package com.elearning.app.course;
 import com.elearning.app.announcement.Announcement;
 import com.elearning.app.announcement.AnnouncementRepository;
 import com.elearning.app.lesson.Lesson;
-import com.elearning.app.responses.coursedetails.CourseDetailsAnnouncementResponse;
-import com.elearning.app.responses.coursedetails.CourseDetailsCourseResponse;
-import com.elearning.app.responses.coursedetails.CourseDetailsLessonResponse;
-import com.elearning.app.responses.coursedetails.CourseDetailsResponse;
+import com.elearning.app.responses.coursedetails.*;
 import com.elearning.app.user.UserAccount;
 import com.elearning.app.user.UserRepository;
 import com.elearning.app.user.UserRole;
@@ -24,6 +21,8 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
@@ -51,7 +50,7 @@ public class CourseController {
             return loggedUser.getCourses();
         }
 
-        return courseRepository.findAll();
+        return courseRepository.findAll().stream().filter(c -> c.getStudents().contains(loggedUser)).collect(Collectors.toList());
     }
 
 
@@ -60,6 +59,12 @@ public class CourseController {
         Optional<Course> optionalCourse = courseRepository.findById(id);
 
         if (optionalCourse.isPresent()) {
+            UserAccount loggedUser = getUserAccount();
+            if (!loggedUser.getRoles().contains(UserRole.TEACHER)) {
+                if (!optionalCourse.get().getStudents().contains(loggedUser)) {
+                    throw new RuntimeException("Not access to course");
+                }
+            }
             //odpowiedz zawierajaca wszystkie wymagane przez course details dane
             CourseDetailsResponse response = new CourseDetailsResponse();
 
@@ -93,19 +98,22 @@ public class CourseController {
             }
 
 
-            //lista studentow
-//            List<Student> students = optionalCourse.get().get();
-//            List<Student> lessonResponses = new ArrayList<>();
-//            for (Student lesson : students) {
-//                StudentResponse lessonResponse = new StudentResponse();
-//                lessonResponse.setId(lesson.getId());
-//                lessonResponse.setName(lesson.getName());
-//                lessonResponses.add(lessonResponse);
-//            }
+//            lista studentow
+            Set<UserAccount> students = optionalCourse.get().getStudents();
+            List<CourseDetailsStudentResponse> studentResponse = new ArrayList<>();
+            for (UserAccount student : students) {
+                CourseDetailsStudentResponse studentResp = new CourseDetailsStudentResponse();
+                studentResp.setId(student.getId());
+                studentResp.setFirstName(student.getFirstName());
+                studentResp.setLastName(student.getLastName());
+                studentResp.setEmail(student.getEmail());
+                studentResponse.add(studentResp);
+            }
 
             response.setCourse(courseResponse);
             response.setAnnouncements(announcementsResponse);
             response.setLessons(lessonResponses);
+            response.setStudents(studentResponse);
 
             return response;
         }
@@ -115,6 +123,10 @@ public class CourseController {
 
     @PostMapping("/courses")
     public ResponseEntity addCourse(@RequestBody Course course) {
+        UserAccount loggedUser = getUserAccount();
+        if (!loggedUser.getRoles().contains(UserRole.TEACHER)) {
+            throw new RuntimeException("Not teacher");
+        }
         UserAccount teacher = getUserAccount();
 
         String name = course.getName();
@@ -140,6 +152,10 @@ public class CourseController {
     @PostMapping(path = "/courses/{courseId}/announcements")
     public ResponseEntity<Announcement> saveAnnouncements(@PathVariable Long courseId, @RequestBody Announcement announcement)
             throws IOException {
+        UserAccount loggedUser = getUserAccount();
+        if (!loggedUser.getRoles().contains(UserRole.TEACHER)) {
+            throw new RuntimeException("Not teacher");
+        }
         Course course = courseRepository.findById(courseId).get();
         announcement.setId(null);
         announcement.setDate(LocalDate.now(ZoneId.systemDefault()));
@@ -153,6 +169,10 @@ public class CourseController {
     @DeleteMapping(path = "/courses/{courseId}/announcements/{announcementId}")
     public ResponseEntity deleteAnnouncement(@PathVariable Long courseId, @PathVariable Long announcementId)
             throws IOException {
+        UserAccount loggedUser = getUserAccount();
+        if (!loggedUser.getRoles().contains(UserRole.TEACHER)) {
+            throw new RuntimeException("Not teacher");
+        }
         Course course = courseRepository.findById(courseId).get();
         Announcement announcement = announcementRepository.findById(announcementId).get();
         course.getAnnouncements().remove(announcement);
@@ -164,10 +184,49 @@ public class CourseController {
 
     @PostMapping("/courses/{id}/regenerate-access-code")
     public ResponseEntity regenerateAccessCode(@PathVariable Long id) {
+        UserAccount loggedUser = getUserAccount();
+        if (!loggedUser.getRoles().contains(UserRole.TEACHER)) {
+            throw new RuntimeException("Not teacher");
+        }
         Course course = courseRepository.findById(id).get();
         course.setAccessCode(generateCourseCode());
         courseRepository.save(course);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/courses/{id}/remove-student/{studentId}")
+    public ResponseEntity removeStudentFromCourse(@PathVariable Long id, @PathVariable Long studentId) {
+        UserAccount loggedUser = getUserAccount();
+        if (!loggedUser.getRoles().contains(UserRole.TEACHER)) {
+            throw new RuntimeException("Not teacher");
+        }
+        UserAccount userAccount = userRepository.findById(studentId).get();
+        Course course = courseRepository.findById(id).get();
+        userAccount.getCoursesAsStudent().remove(course);
+        course.getStudents().remove(userAccount);
+        courseRepository.save(course);
+        userRepository.save(userAccount);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/courses/{code}/join")
+    public ResponseEntity joinToCourse(@PathVariable String code) {
+        UserAccount loggedUser = getUserAccount();
+        if (!loggedUser.getRoles().contains(UserRole.STUDENT)) {
+            throw new RuntimeException("Not student");
+        }
+        UserAccount userAccount = getUserAccount();
+        Course course = courseRepository.findByAccessCode(code).get();
+        Set<UserAccount> students = course.getStudents();
+        students.add(userAccount);
+        userAccount.getCoursesAsStudent().add(course);
+
+        courseRepository.save(course);
+        userRepository.save(userAccount);
+
+        CourseDetailsCourseResponse response = new CourseDetailsCourseResponse();
+        response.setId(course.getId());
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     private String generateCourseCode() {
