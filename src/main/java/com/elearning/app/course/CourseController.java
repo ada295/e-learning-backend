@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -146,5 +145,16 @@ public class CourseController {
         course.getAnnouncements().add(announcement);
 
         return new ResponseEntity<>(announcement, HttpStatus.OK);
+    }
+
+    @DeleteMapping(path = "/courses/{courseId}/announcements/{announcementId}")
+    public ResponseEntity deleteAnnouncement(@PathVariable Long courseId, @PathVariable Long announcementId)
+            throws IOException {
+        Course course = courseRepository.findById(courseId).get();
+        Announcement announcement = announcementRepository.findById(announcementId).get();
+        course.getAnnouncements().remove(announcement);
+        announcementRepository.delete(announcement);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
