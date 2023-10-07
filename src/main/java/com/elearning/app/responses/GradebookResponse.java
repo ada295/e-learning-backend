@@ -14,4 +14,5 @@ public class GradebookResponse {
     private CourseDetailsCourseResponse course;
     private CourseDetailsStudentResponse student;
     private List<Grade> grades;
+    private Double avg;
 }

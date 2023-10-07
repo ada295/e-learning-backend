@@ -74,8 +74,24 @@ public class CourseController {
         GradebookResponse gradebookResponse = new GradebookResponse();
         gradebookResponse.setCourse(getCourseDetailsCourseResponse(course));
         gradebookResponse.setStudent(getCourseDetailsStudentResponse(user));
+        gradebookResponse.setAvg(calcAvg(grades));
         gradebookResponse.setGrades(grades);
         return gradebookResponse;
+    }
+
+    private Double calcAvg(List<Grade> grades) {
+        Double res = 0.0;
+        int c = 0;
+        for (Grade grade : grades) {
+            if (grade.getValue() != null) {
+                res += grade.getValue();
+                c++;
+            }
+        }
+        if (c > 0) {
+            return res / c;
+        }
+        return 0.0;
     }
 
 
