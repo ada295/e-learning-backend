@@ -76,7 +76,11 @@ INSERT INTO Task (id, description, end_date, lesson_id) VALUES (5, 'Rozwiąż ć
 INSERT INTO Task (id, description, end_date, lesson_id) VALUES (6, 'Zaprojektuj interfejs użytkownika dla aplikacji mobilnej', '2024-01-25',  1);
 
 INSERT INTO Task_Student (id, status, task_id, owner_id, filename) VALUES (1, 'OCENIONE', 1, 6, 'rozwiazanie.txt');
-INSERT INTO GRADE (id, category, value, comment, task_owner_id) VALUES (1, 'Zadanie', 5, 'Wszystko poprawnie rozwiązane!', 1);
+INSERT INTO GRADE (id, category, value, comment, task_owner_id, student_id) VALUES (1, 'Zadanie', 5, 'Wszystko poprawnie rozwiązane!', 1, 3);
+INSERT INTO GRADE (id, category, value, comment, task_owner_id, student_id) VALUES (2, 'Odpowiedź ustna', 5, 'Poprawna i składna odpowiedź!', null, 3);
+
+INSERT INTO courses_grades (grade_id, course_id) VALUES(1, 1);
+INSERT INTO courses_grades (grade_id, course_id) VALUES(2, 1);
 
 INSERT INTO Task_Student (id, status, task_id, owner_id, filename) VALUES (2, 'WYKONANE', 2, 6, 'kowalski.zip');
 INSERT INTO Task_Student (id, status, task_id, owner_id, filename) VALUES (3, 'OCENIONE', 3, 6, 'rozwiazanie.pdf');

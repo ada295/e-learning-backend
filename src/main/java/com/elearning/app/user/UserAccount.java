@@ -2,6 +2,7 @@ package com.elearning.app.user;
 
 import com.elearning.app.course.Course;
 import com.elearning.app.exam.ExamResult;
+import com.elearning.app.lesson.Grade;
 import com.elearning.app.lesson.TaskStudent;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
@@ -40,6 +41,9 @@ public class UserAccount {
     @OneToMany(mappedBy = "owner")
     @JsonIgnore
     private List<TaskStudent> tasksStudent;
+    @OneToMany(mappedBy = "student")
+    @JsonIgnore
+    private Set<Grade> grades;
     @OneToMany(mappedBy = "student")
     @JsonIgnore
     private List<ExamResult> myExamResults;

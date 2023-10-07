@@ -2,7 +2,9 @@ package com.elearning.app.course;
 
 import com.elearning.app.announcement.Announcement;
 import com.elearning.app.announcement.AnnouncementRepository;
+import com.elearning.app.lesson.Grade;
 import com.elearning.app.lesson.Lesson;
+import com.elearning.app.responses.GradebookResponse;
 import com.elearning.app.responses.coursedetails.*;
 import com.elearning.app.user.UserAccount;
 import com.elearning.app.user.UserRepository;
@@ -18,10 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -46,11 +45,37 @@ public class CourseController {
     @GetMapping("/courses")
     public List<Course> getCourses() {
         UserAccount loggedUser = getUserAccount();
-        if(loggedUser.getRoles().contains(UserRole.TEACHER)) {
+        if (loggedUser.getRoles().contains(UserRole.TEACHER)) {
             return loggedUser.getCourses();
         }
 
         return courseRepository.findAll().stream().filter(c -> c.getStudents().contains(loggedUser)).collect(Collectors.toList());
+    }
+
+    @GetMapping("/courses/{id}/grades")
+    public List<GradebookResponse> getCoursesGrades(@PathVariable Long id) {
+        UserAccount loggedUser = getUserAccount();
+        Course course = courseRepository.findById(id).get();
+        if (loggedUser.getRoles().contains(UserRole.TEACHER)) {
+            List<GradebookResponse> responses = new ArrayList<>();
+            Set<UserAccount> students = course.getStudents();
+            for (UserAccount student : students) {
+                responses.add(getGradebookResponse(student, course));
+            }
+            return responses;
+        } else {
+            return Collections.singletonList(getGradebookResponse(loggedUser, course));
+        }
+    }
+
+    private GradebookResponse getGradebookResponse(UserAccount user, Course course) {
+        List<Grade> grades = course.getGrades().stream().filter(e -> e.getStudent().equals(user))
+                .collect(Collectors.toList());
+        GradebookResponse gradebookResponse = new GradebookResponse();
+        gradebookResponse.setCourse(getCourseDetailsCourseResponse(course));
+        gradebookResponse.setStudent(getCourseDetailsStudentResponse(user));
+        gradebookResponse.setGrades(grades);
+        return gradebookResponse;
     }
 
 
@@ -60,23 +85,19 @@ public class CourseController {
 
         if (optionalCourse.isPresent()) {
             UserAccount loggedUser = getUserAccount();
+            Course course = optionalCourse.get();
             if (!loggedUser.getRoles().contains(UserRole.TEACHER)) {
-                if (!optionalCourse.get().getStudents().contains(loggedUser)) {
+                if (!course.getStudents().contains(loggedUser)) {
                     throw new RuntimeException("Not access to course");
                 }
             }
             //odpowiedz zawierajaca wszystkie wymagane przez course details dane
             CourseDetailsResponse response = new CourseDetailsResponse();
 
-            CourseDetailsCourseResponse courseResponse = new CourseDetailsCourseResponse();
-            courseResponse.setId(optionalCourse.get().getId());
-            courseResponse.setDescription(optionalCourse.get().getDescription());
-            courseResponse.setName(optionalCourse.get().getName());
-            courseResponse.setAccessCode(optionalCourse.get().getAccessCode());
-            courseResponse.setFinished(optionalCourse.get().isFinished());
+            CourseDetailsCourseResponse courseResponse = getCourseDetailsCourseResponse(course);
 
             //lista lekcji
-            List<Lesson> lessons = optionalCourse.get().getLessons();
+            List<Lesson> lessons = course.getLessons();
             List<CourseDetailsLessonResponse> lessonResponses = new ArrayList<>();
 
             for (int i = lessons.size() - 1; i >= 0; i--) {
@@ -86,7 +107,7 @@ public class CourseController {
                 lessonResponses.add(lessonResponse);
             }
 
-            List<Announcement> announcements = optionalCourse.get().getAnnouncements();
+            List<Announcement> announcements = course.getAnnouncements();
             List<CourseDetailsAnnouncementResponse> announcementsResponse = new ArrayList<>();
             for (int i = announcements.size() - 1; i >= 0; i--) {
                 CourseDetailsAnnouncementResponse announcementResponse = new CourseDetailsAnnouncementResponse();
@@ -99,14 +120,10 @@ public class CourseController {
 
 
 //            lista studentow
-            Set<UserAccount> students = optionalCourse.get().getStudents();
+            Set<UserAccount> students = course.getStudents();
             List<CourseDetailsStudentResponse> studentResponse = new ArrayList<>();
             for (UserAccount student : students) {
-                CourseDetailsStudentResponse studentResp = new CourseDetailsStudentResponse();
-                studentResp.setId(student.getId());
-                studentResp.setFirstName(student.getFirstName());
-                studentResp.setLastName(student.getLastName());
-                studentResp.setEmail(student.getEmail());
+                CourseDetailsStudentResponse studentResp = getCourseDetailsStudentResponse(student);
                 studentResponse.add(studentResp);
             }
 
@@ -119,6 +136,25 @@ public class CourseController {
         }
 
         return null;
+    }
+
+    private static CourseDetailsStudentResponse getCourseDetailsStudentResponse(UserAccount student) {
+        CourseDetailsStudentResponse studentResp = new CourseDetailsStudentResponse();
+        studentResp.setId(student.getId());
+        studentResp.setFirstName(student.getFirstName());
+        studentResp.setLastName(student.getLastName());
+        studentResp.setEmail(student.getEmail());
+        return studentResp;
+    }
+
+    private static CourseDetailsCourseResponse getCourseDetailsCourseResponse(Course course) {
+        CourseDetailsCourseResponse courseResponse = new CourseDetailsCourseResponse();
+        courseResponse.setId(course.getId());
+        courseResponse.setDescription(course.getDescription());
+        courseResponse.setName(course.getName());
+        courseResponse.setAccessCode(course.getAccessCode());
+        courseResponse.setFinished(course.isFinished());
+        return courseResponse;
     }
 
     @PostMapping("/courses")
@@ -193,6 +229,7 @@ public class CourseController {
         courseRepository.save(course);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
 
     @DeleteMapping("/courses/{id}/remove-student/{studentId}")
     public ResponseEntity removeStudentFromCourse(@PathVariable Long id, @PathVariable Long studentId) {

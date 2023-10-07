@@ -230,8 +230,8 @@ public class LessonController {
     }
 
     @PostMapping(path = "/tasks/{taskId}/upload-solution")
-    public ResponseEntity uploadTaskSolution(@RequestParam(required = false) MultipartFile file, @PathVariable Long taskId)
-            throws IOException {
+    public ResponseEntity uploadTaskSolution(@RequestParam(required = false) MultipartFile file,
+                                             @PathVariable Long taskId) throws IOException {
         User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         UserAccount userAccount = userRepository.findByEmail(principal.getUsername()).get();
         Long studentId = userAccount.getId();

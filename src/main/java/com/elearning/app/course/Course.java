@@ -1,6 +1,7 @@
 package com.elearning.app.course;
 
 import com.elearning.app.announcement.Announcement;
+import com.elearning.app.lesson.Grade;
 import com.elearning.app.lesson.Lesson;
 import com.elearning.app.user.UserAccount;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -25,6 +26,10 @@ public class Course {
     private String description;
     private String accessCode;
     private boolean finished;
+
+    @ManyToMany(mappedBy = "courses", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    @JsonIgnore
+    private Set<Grade> grades = new HashSet<>();
 
     @OneToMany(mappedBy = "course")
     @JsonIgnore
