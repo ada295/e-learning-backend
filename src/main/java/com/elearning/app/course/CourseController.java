@@ -59,7 +59,7 @@ public class CourseController {
     @PostMapping("/courses/{id}/add-grade/{studentId}")
     public void addGrade(@PathVariable Long id, @RequestBody Grade grade, @PathVariable Long studentId) {
         UserAccount loggedUser = getUserAccount();
-        if(!loggedUser.getRoles().contains(UserRole.TEACHER)) {
+        if (!loggedUser.getRoles().contains(UserRole.TEACHER)) {
             return;
         }
         Course course = courseRepository.findById(id).get();
@@ -68,6 +68,34 @@ public class CourseController {
         grade.setStudent(userAccount);
         grade = gradeRepository.save(grade);
         course.getGrades().add(grade);
+    }
+
+    @PostMapping("/courses/grades/edit-grade")
+    public void editGrade(@RequestBody Grade grade) {
+        UserAccount loggedUser = getUserAccount();
+        if (!loggedUser.getRoles().contains(UserRole.TEACHER)) {
+            return;
+        }
+        Grade savedGrade = gradeRepository.findById(grade.getId()).get();
+        savedGrade.setComment(grade.getComment());
+        savedGrade.setValue(grade.getValue());
+        savedGrade = gradeRepository.save(savedGrade);
+    }
+
+    @DeleteMapping("/courses/grades/delete-grade/{id}")
+    public void deleteGrade(@PathVariable Long id) {
+        UserAccount loggedUser = getUserAccount();
+        if (!loggedUser.getRoles().contains(UserRole.TEACHER)) {
+            return;
+        }
+        Grade grade = gradeRepository.findById(id).get();
+        Set<Course> courses = grade.getCourses();
+        for (Course cours : courses) {
+            cours.getGrades().remove(grade);
+        }
+        grade.getCourses().clear();
+
+        gradeRepository.delete(grade);
     }
 
     @GetMapping("/courses/{id}/grades")
