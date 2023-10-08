@@ -331,7 +331,7 @@ public class CourseController {
     private String generateCourseCode() {
         String code = "";
         do {
-            code = RandomString.make(15);
+            code = RandomString.make(10);
         } while (courseRepository.findByAccessCode(code).isPresent());
 
         return code;
