@@ -66,6 +66,9 @@ public class CourseController {
         UserAccount userAccount = userRepository.findById(studentId).get();
         grade.getCourses().add(course);
         grade.setStudent(userAccount);
+        if(grade.getLesson() == null || grade.getLesson().getId() == null) {
+            grade.setLesson(null);
+        }
         grade = gradeRepository.save(grade);
         course.getGrades().add(grade);
     }
