@@ -17,7 +17,6 @@ public class Task {
     private Date endDate;
     @ManyToOne
     @JoinColumn(name = "lesson_id", nullable = false)
-    @JsonIgnore
     private Lesson lesson;
     @OneToMany(mappedBy = "task")
     @JsonIgnore

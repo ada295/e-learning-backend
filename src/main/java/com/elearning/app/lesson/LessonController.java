@@ -109,6 +109,7 @@ public class LessonController {
         for (UserAccount student : students) {
             TaskToDo taskToDo = buildTaskToDo(task, student.getId());
             CourseDetailsStudentResponse studentResponse = new CourseDetailsStudentResponse();
+            studentResponse.setId(student.getId());
             studentResponse.setFirstName(student.getFirstName());
             studentResponse.setEmail(student.getEmail());
             studentResponse.setLastName(student.getLastName());
@@ -137,7 +138,11 @@ public class LessonController {
         taskToDo.setTask(task);
 
         Optional<TaskStudent> taskStudent = task.getTaskStudents().stream()
-                .filter(e -> e.getOwner() != null && studentId.equals(e.getOwner().getId())).findFirst();
+                .filter(e -> e.getOwner() != null && studentId.equals(e.getOwner().getId()))
+                .findFirst();
+
+        UserAccount userAccount = userRepository.findById(studentId).get();
+        taskToDo.setStudent(userAccount);
 
         if (taskStudent.isPresent()) {
             taskToDo.setTaskStudent(taskStudent.get());

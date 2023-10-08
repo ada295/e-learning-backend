@@ -1,14 +1,14 @@
 package com.elearning.app.lesson;
 
+import com.elearning.app.user.UserAccount;
+
 public class TaskToDo {
     private Task task;
     private TaskStudent taskStudent;
     private TaskStudentStatus status;
     private String icon;
+    private UserAccount student;
     private Double grade;
-
-    public TaskToDo() {
-    }
 
     public Task getTask() {
         return task;
@@ -48,5 +48,13 @@ public class TaskToDo {
 
     public void setGrade(Double grade) {
         this.grade = grade;
+    }
+
+    public UserAccount getStudent() {
+        return student;
+    }
+
+    public void setStudent(UserAccount student) {
+        this.student = student;
     }
 }
