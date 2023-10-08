@@ -3,10 +3,12 @@ package com.elearning.app.exam;
 
 import com.elearning.app.answer.Answer;
 import com.elearning.app.answer.AnswerRepository;
+import com.elearning.app.course.Course;
 import com.elearning.app.course.CourseRepository;
 import com.elearning.app.lesson.Lesson;
 import com.elearning.app.lesson.LessonRepository;
 import com.elearning.app.question.*;
+import com.elearning.app.responses.coursedetails.CourseDetailsCourseResponse;
 import com.elearning.app.responses.examdetails.ExamDetailsAnswerResponse;
 import com.elearning.app.responses.examdetails.ExamDetailsExamResponse;
 import com.elearning.app.responses.examdetails.ExamDetailsQuestionResponse;
@@ -21,6 +23,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -49,6 +52,11 @@ public class ExamController {
         Optional<Exam> optionalExam = Optional.of(lesson.getExam());
 
         if (optionalExam.isPresent()) {
+
+            if(optionalExam.get().getEndDate().isBefore(LocalDateTime.now())
+                    || optionalExam.get().getStartDate().isAfter(LocalDateTime.now())) {
+                return null;
+            }
             //odpowiedz zawierajaca wszystkie dane wymagane przez ExamDetails
 
             ExamDetailsResponse response = new ExamDetailsResponse();
@@ -130,6 +138,8 @@ public class ExamController {
         Exam exam = new Exam();
         exam.setName(request.getName());
         exam.setDescription(request.getDescription());
+        exam.setStartDate(request.getStartDate());
+        exam.setEndDate(request.getEndDate());
         Optional<Lesson> byId = lessonRepository.findById(lessonId);
         exam.setLesson(byId.get());
         exam = repository.save(exam);
@@ -230,7 +240,6 @@ public class ExamController {
         return ResponseEntity.ok(examResultResponse);
     }
 
-    // zabezpieczyc przed nieprawidlowym id exam
     @PostMapping("/exam/{id}/finish")
     public ResponseEntity<ExamResultResponse> finishExam(@PathVariable Long id, @RequestBody List<ExamFinishRequest> body) {
         UserAccount loggedUser = getUserAccount();
@@ -248,7 +257,13 @@ public class ExamController {
         }
 
         ExamResult examResult = new ExamResult();
-        Exam exam = repository.findById(id).get();
+        Exam exam = lessonRepository.findById(id).get().getExam();
+
+        if(exam.getEndDate().isBefore(LocalDateTime.now())
+                || exam.getStartDate().isAfter(LocalDateTime.now())) {
+            return ResponseEntity.status(400).build();
+        }
+
         examResult.setExam(exam);
         examResult.setStudent(loggedUser);
         examResult.setTeacher(exam.getLesson().getCourse().getOwner());
@@ -304,6 +319,12 @@ public class ExamController {
         ExamResultResponse examResultResponse = new ExamResultResponse();
         examResultResponse.setExamResultId(saved.getId());
         examResultResponse.setExam(saved.getExam());
+        Course course = saved.getExam().getLesson().getCourse();
+        CourseDetailsCourseResponse courseRes = new CourseDetailsCourseResponse();
+        courseRes.setId(course.getId());
+        courseRes.setName(course.getName());
+        courseRes.setDescription(course.getDescription());
+        examResultResponse.setCourse(courseRes);
         examResultResponse.setPoints(sumPoints(saved));
         examResultResponse.setStatus(saved.getStatus());
         examResultResponse.setMaxPoints(sumMaxPoints(saved.getExam()));

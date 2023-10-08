@@ -1,6 +1,7 @@
 package com.elearning.app.exam;
 
 import com.elearning.app.question.QuestionStudentAnswerResponse;
+import com.elearning.app.responses.coursedetails.CourseDetailsCourseResponse;
 import com.elearning.app.user.UserAccount;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,4 +18,5 @@ public class ExamResultResponse {
     private Double points;
     private Double maxPoints;
     private String status;
+    private CourseDetailsCourseResponse course;
 }
