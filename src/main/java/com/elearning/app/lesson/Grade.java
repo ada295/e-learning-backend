@@ -25,6 +25,9 @@ public class Grade {
     @JoinColumn(name = "student_id")
     @JsonIgnore
     private UserAccount student;
+    @ManyToOne
+    @JoinColumn(name = "lesson_id")
+    private Lesson lesson;
     @ManyToMany
     @JoinTable(
             name = "courses_grades",
@@ -91,5 +94,13 @@ public class Grade {
 
     public void setStudent(UserAccount student) {
         this.student = student;
+    }
+
+    public Lesson getLesson() {
+        return lesson;
+    }
+
+    public void setLesson(Lesson lesson) {
+        this.lesson = lesson;
     }
 }

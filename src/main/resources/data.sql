@@ -43,8 +43,8 @@ INSERT INTO CALENDAR_EVENT(ID, DAY, MONTH, YEAR, HOUR, MINUTES, DESCRIPTION, TYP
             VALUES(3, 24, 5, 2023, 16, 30, 'Wywiadówka', 'OTHER', 4);
 
 
-Insert into Exam (id, name, lesson_id, start_date, end_date, max_minutes) values (1, 'Test zaliczeniowy - semestr 1', 1, '2023-10-15 10:30:00',
-                                               '2023-10-15 11:30:00' , 45);
+Insert into Exam (id, name, lesson_id, start_date, end_date, max_minutes) values (1, 'Test zaliczeniowy - semestr 1', 1, '2023-10-01 10:30:00',
+                                               '2024-10-15 11:30:00' , 45);
 
 Insert into Question (id, content, points, exam_id, question_type) values (1, 'Ile to 2+3?',1,1, 'ONE_CHOICE');
 
@@ -76,8 +76,8 @@ INSERT INTO Task (id, description, end_date, lesson_id) VALUES (5, 'Rozwiąż ć
 INSERT INTO Task (id, description, end_date, lesson_id) VALUES (6, 'Zaprojektuj interfejs użytkownika dla aplikacji mobilnej', '2024-01-25',  1);
 
 INSERT INTO Task_Student (id, status, task_id, owner_id, filename) VALUES (1, 'OCENIONE', 1, 6, 'rozwiazanie.txt');
-INSERT INTO GRADE (id, category, value, comment, task_owner_id, student_id) VALUES (1, 'Zadanie', 5, 'Wszystko poprawnie rozwiązane!', 1, 3);
-INSERT INTO GRADE (id, category, value, comment, task_owner_id, student_id) VALUES (2, 'Odpowiedź ustna', 5, 'Poprawna i składna odpowiedź!', null, 3);
+INSERT INTO GRADE (id, category, value, comment, task_owner_id, student_id, lesson_id) VALUES (1, 'Zadanie', 5, 'Wszystko poprawnie rozwiązane!', 1, 3, 1);
+INSERT INTO GRADE (id, category, value, comment, task_owner_id, student_id, lesson_id) VALUES (2, 'Odpowiedź ustna', 5, 'Poprawna i składna odpowiedź!', null, 3, 1);
 
 INSERT INTO courses_grades (grade_id, course_id) VALUES(1, 1);
 INSERT INTO courses_grades (grade_id, course_id) VALUES(2, 1);

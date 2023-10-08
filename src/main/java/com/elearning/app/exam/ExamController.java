@@ -318,6 +318,7 @@ public class ExamController {
     private ExamResultResponse buildExamResultResponse(ExamResult saved) {
         ExamResultResponse examResultResponse = new ExamResultResponse();
         examResultResponse.setExamResultId(saved.getId());
+        examResultResponse.setLessonId(saved.getExam().getLesson().getId());
         examResultResponse.setExam(saved.getExam());
         Course course = saved.getExam().getLesson().getCourse();
         CourseDetailsCourseResponse courseRes = new CourseDetailsCourseResponse();

@@ -6,7 +6,9 @@ import com.elearning.app.exam.Exam;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @SequenceGenerator(name = "lesson_id_gen", sequenceName = "lesson_id_gen", initialValue = 50)
@@ -19,6 +21,10 @@ public class Lesson {
     @ManyToOne
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
+
+    @OneToMany(mappedBy = "lesson")
+    @JsonIgnore
+    private Set<Grade> grades = new HashSet<>();
 
     @OneToMany
     private List<CalendarEvent> calendarEvents;
@@ -93,5 +99,13 @@ public class Lesson {
 
     public void setExam(Exam exam) {
         this.exam = exam;
+    }
+
+    public Set<Grade> getGrades() {
+        return grades;
+    }
+
+    public void setGrades(Set<Grade> grades) {
+        this.grades = grades;
     }
 }

@@ -12,6 +12,7 @@ import java.util.List;
 @Setter
 public class ExamResultResponse {
     private Long examResultId;
+    private Long lessonId;
     private List<QuestionStudentAnswerResponse> questions;
     private Exam exam;
     private UserAccount student;
