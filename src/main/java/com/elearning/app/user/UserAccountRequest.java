@@ -8,6 +8,7 @@ import java.util.Set;
 @Getter
 @Setter
 public class UserAccountRequest {
+    private Long id;
     private String firstName;
     private String lastName;
     private String email;

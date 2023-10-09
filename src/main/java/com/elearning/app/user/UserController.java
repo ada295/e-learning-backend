@@ -1,10 +1,17 @@
 package com.elearning.app.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
@@ -12,6 +19,46 @@ public class UserController {
 
     @Autowired
     private UserRepository repository;
+
+
+    @PostMapping("/change-data-as-admin")
+    public ResponseEntity<?> editDataAsAdmin(@RequestBody UserAccountRequest user) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.getAuthorities().stream().noneMatch(e -> e.getAuthority().equals("ADMIN"))) {
+            return ResponseEntity.status(403).build();
+        }
+
+        UserAccount userAccount = repository.findById(user.getId()).get();
+        userAccount.setEmail(user.getEmail());
+        userAccount.setFirstName(user.getFirstName());
+        userAccount.setLastName(user.getLastName());
+
+        if (user.getPassword() != null && !user.getPassword().equals("")) {
+            userAccount.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
+        }
+        Map<String, Object> responseMap = new HashMap<>();
+
+        repository.save(userAccount);
+        return ResponseEntity.ok(responseMap);
+    }
+
+    @PostMapping("/edit-profile")
+    public ResponseEntity<?> editProfile(@RequestBody UserAccountRequest user) {
+        User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserAccount userAccount = repository.findByEmail(principal.getUsername()).get();
+
+        userAccount.setEmail(user.getEmail());
+        userAccount.setFirstName(user.getFirstName());
+        userAccount.setLastName(user.getLastName());
+
+        if (user.getPassword() != null && !user.getPassword().equals("")) {
+            userAccount.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
+        }
+        Map<String, Object> responseMap = new HashMap<>();
+
+        repository.save(userAccount);
+        return ResponseEntity.ok(responseMap);
+    }
 
     @GetMapping("/students")
     public List<UserAccount> getStudents() {
@@ -21,6 +68,23 @@ public class UserController {
     @GetMapping("/students/{id}")
     public UserAccount getStudentById(@PathVariable Long id) {
         return repository.findById(id).get();
+    }
+
+    @GetMapping("/my-profile")
+    public UserAccount myProfile() {
+        User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserAccount userAccount = repository.findByEmail(principal.getUsername()).get();
+
+        return userAccount;
+    }
+
+    @GetMapping("/users/{id}")
+    public ResponseEntity<UserAccount> getAccountById(@PathVariable Long id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.getAuthorities().stream().noneMatch(e -> e.getAuthority().equals("ADMIN"))) {
+            return ResponseEntity.status(403).build();
+        }
+        return ResponseEntity.ok(repository.findById(id).get());
     }
 
     @GetMapping("/admins")
