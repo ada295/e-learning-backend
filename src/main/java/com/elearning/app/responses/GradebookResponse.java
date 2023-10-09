@@ -13,6 +13,6 @@ import java.util.List;
 public class GradebookResponse {
     private CourseDetailsCourseResponse course;
     private CourseDetailsStudentResponse student;
-    private List<Grade> grades;
+    private List<GradeResp> grades;
     private Double avg;
 }

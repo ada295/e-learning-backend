@@ -2,9 +2,8 @@ package com.elearning.app.course;
 
 import com.elearning.app.announcement.Announcement;
 import com.elearning.app.announcement.AnnouncementRepository;
-import com.elearning.app.lesson.Grade;
-import com.elearning.app.lesson.GradeRepository;
-import com.elearning.app.lesson.Lesson;
+import com.elearning.app.lesson.*;
+import com.elearning.app.responses.GradeResp;
 import com.elearning.app.responses.GradebookResponse;
 import com.elearning.app.responses.coursedetails.*;
 import com.elearning.app.user.UserAccount;
@@ -32,6 +31,9 @@ public class CourseController {
     private CourseRepository courseRepository;
 
     @Autowired
+    private TaskStudentRepository taskStudentRepository;
+
+    @Autowired
     private GradeRepository gradeRepository;
 
     @Autowired
@@ -57,19 +59,32 @@ public class CourseController {
     }
 
     @PostMapping("/courses/{id}/add-grade/{studentId}")
-    public void addGrade(@PathVariable Long id, @RequestBody Grade grade, @PathVariable Long studentId) {
+    public void addGrade(@PathVariable Long id, @RequestBody Grade grade,
+                         @PathVariable Long studentId,
+                         @RequestParam(required = false) Long taskStudentId) {
         UserAccount loggedUser = getUserAccount();
         if (!loggedUser.getRoles().contains(UserRole.TEACHER)) {
             return;
+        }
+
+        if (taskStudentId != null) {
+            TaskStudent taskStudent = taskStudentRepository.findById(taskStudentId).get();
+            grade.setTaskStudent(taskStudent);
         }
         Course course = courseRepository.findById(id).get();
         UserAccount userAccount = userRepository.findById(studentId).get();
         grade.getCourses().add(course);
         grade.setStudent(userAccount);
-        if(grade.getLesson() == null || grade.getLesson().getId() == null) {
+        if (grade.getLesson() == null || grade.getLesson().getId() == null) {
             grade.setLesson(null);
         }
         grade = gradeRepository.save(grade);
+        if (taskStudentId != null) {
+            TaskStudent taskStudent = taskStudentRepository.findById(taskStudentId).get();
+            taskStudent.setStatus(TaskStudentStatus.OCENIONE);
+            taskStudent.setGrade(grade);
+            taskStudentRepository.save(taskStudent);
+        }
         course.getGrades().add(grade);
     }
 
@@ -124,7 +139,18 @@ public class CourseController {
         gradebookResponse.setCourse(getCourseDetailsCourseResponse(course));
         gradebookResponse.setStudent(getCourseDetailsStudentResponse(user));
         gradebookResponse.setAvg(calcAvg(grades));
-        gradebookResponse.setGrades(grades);
+        List<GradeResp> gradeResps = new ArrayList<>();
+        for (Grade grade : grades) {
+            GradeResp gr = new GradeResp();
+            gr.setGrade(grade);
+            if (grade.getTaskStudent() != null) {
+                TaskToDo taskToDo = new TaskToDo();
+                taskToDo.setTask(grade.getTaskStudent().getTask());
+                gr.setTask(taskToDo);
+            }
+            gradeResps.add(gr);
+        }
+        gradebookResponse.setGrades(gradeResps);
         return gradebookResponse;
     }
 

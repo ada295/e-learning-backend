@@ -150,6 +150,7 @@ public class LessonController {
             taskToDo.setStatus(status);
             if (status == TaskStudentStatus.OCENIONE) {
                 taskToDo.setIcon("star");
+                taskToDo.setGrade(taskStudent.get().getGrade().getValue());
             } else if (status == TaskStudentStatus.WYKONANE) {
                 taskToDo.setIcon("done");
             }
