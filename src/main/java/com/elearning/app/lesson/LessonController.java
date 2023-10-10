@@ -186,10 +186,33 @@ public class LessonController {
     @PostMapping(path = "/lessons/{lessonId}/tasks")
     public ResponseEntity<Task> saveTask(@PathVariable Long lessonId, @RequestBody Task task)
             throws IOException {
+        User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserAccount userAccount = userRepository.findByEmail(principal.getUsername()).get();
+        Long studentId = userAccount.getId();
+        if (!userAccount.getRoles().contains(UserRole.TEACHER)) {
+            return ResponseEntity.badRequest().body(null);
+        }
         Lesson lesson = repository.findById(lessonId).get();
         task.setId(null);
         task.setLesson(lesson);
         task = taskRepository.save(task);
+
+        return new ResponseEntity<>(task, HttpStatus.OK);
+    }
+
+    @PostMapping(path = "tasks/{id}/edit")
+    public ResponseEntity<Task> editTask(@PathVariable Long id, @RequestBody Task task)
+            throws IOException {
+        User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserAccount userAccount = userRepository.findByEmail(principal.getUsername()).get();
+        Long studentId = userAccount.getId();
+        if (!userAccount.getRoles().contains(UserRole.TEACHER)) {
+            return ResponseEntity.badRequest().body(null);
+        }
+        Task origTask = taskRepository.findById(id).get();
+        origTask.setEndDate(task.getEndDate());
+        origTask.setDescription(task.getDescription());
+        origTask = taskRepository.save(origTask);
 
         return new ResponseEntity<>(task, HttpStatus.OK);
     }
