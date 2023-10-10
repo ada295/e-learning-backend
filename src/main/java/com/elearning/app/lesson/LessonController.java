@@ -33,6 +33,8 @@ public class LessonController {
     @Autowired
     private LessonRepository repository;
     @Autowired
+    private GradeRepository gradeRepository;
+    @Autowired
     private CourseRepository courseRepository;
     @Autowired
     private MaterialRepository materialRepository;
@@ -319,6 +321,32 @@ public class LessonController {
                 .body(resource);
     }
 
+
+    @DeleteMapping(path = "/tasks/{taskId}")
+    public void deleteTask(@PathVariable Long taskId) {
+        User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserAccount userAccount = userRepository.findByEmail(principal.getUsername()).get();
+        if (!userAccount.getRoles().contains(UserRole.TEACHER)) {
+            return;
+        }
+        Task task = taskRepository.findById(taskId).get();
+
+        List<TaskStudent> taskStudents = task.getTaskStudents();
+        for (TaskStudent taskStudent : taskStudents) {
+            if(taskStudent.getGrade() != null) {
+                Grade grade = taskStudent.getGrade();
+                grade.setTaskStudent(null);
+                grade.getLesson().getGrades().remove(grade);
+                for (Course cours : grade.getCourses()) {
+                    cours.getGrades().remove(grade);
+                }
+                gradeRepository.delete(grade);
+            }
+
+            taskStudentRepository.delete(taskStudent);
+        }
+        taskRepository.delete(task);
+    }
 
     @DeleteMapping(path = "/materials/{materialId}/delete")
     public void deleteMaterial(@PathVariable Long materialId) {

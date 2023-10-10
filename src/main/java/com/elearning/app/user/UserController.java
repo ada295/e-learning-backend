@@ -8,10 +8,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
@@ -62,7 +59,10 @@ public class UserController {
 
     @GetMapping("/students")
     public List<UserAccount> getStudents() {
-        return repository.findAllByRoles(Collections.singletonList(UserRole.STUDENT));
+        List<UserAccount> allByRoles = repository.findAllByRoles(Collections.singletonList(UserRole.STUDENT));
+        allByRoles.sort(Comparator.comparing(UserAccount::getLastName));
+
+        return allByRoles;
     }
 
     @GetMapping("/students/{id}")
@@ -89,12 +89,16 @@ public class UserController {
 
     @GetMapping("/admins")
     public List<UserAccount> getAdmins() {
-        return repository.findAllByRoles(Collections.singletonList(UserRole.ADMIN));
+        List<UserAccount> allByRoles = repository.findAllByRoles(Collections.singletonList(UserRole.ADMIN));
+        allByRoles.sort(Comparator.comparing(UserAccount::getLastName));
+        return allByRoles;
     }
 
     @GetMapping("/teachers")
     public List<UserAccount> getTeachers() {
-        return repository.findAllByRoles(Collections.singletonList(UserRole.TEACHER));
+        List<UserAccount> allByRoles = repository.findAllByRoles(Collections.singletonList(UserRole.TEACHER));
+        allByRoles.sort(Comparator.comparing(UserAccount::getLastName));
+        return allByRoles;
     }
 
     @GetMapping("/users")
@@ -102,6 +106,7 @@ public class UserController {
         List<UserAccount> users = getStudents();
         users.addAll(getAdmins());
         users.addAll(getTeachers());
+        users.sort(Comparator.comparing(UserAccount::getLastName));
 
         return users;
     }

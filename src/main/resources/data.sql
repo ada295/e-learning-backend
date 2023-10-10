@@ -67,7 +67,6 @@ Insert into Material (id, name, description, type, filename, lesson_id) values (
 Insert into Material (id, name, description, type, filename, lesson_id) values (3, 'Materiał 3', 'm1', 'TXT', 'zadania.txt', 1);
 Insert into Material (id, name, description, type, filename, lesson_id) values (4, 'Materiał 4', 'm1', 'TXT', 'zadania.txt', 1);
 
-
 INSERT INTO Task (id, description, end_date, lesson_id) VALUES (1, 'Wykonaj zadania zamieszczone w materiałach 4, 5, 6', '2023-10-04',  1);
 INSERT INTO Task (id, description, end_date, lesson_id) VALUES (2, 'Przygotuj prezentację na temat historii programowania', '2023-03-05',  1);
 INSERT INTO Task (id, description, end_date, lesson_id) VALUES (3, 'Zaimplementuj algorytm sortowania bąbelkowego', '2023-03-06',  1);
@@ -75,16 +74,9 @@ INSERT INTO Task (id, description, end_date, lesson_id) VALUES (4, 'Przeczytaj r
 INSERT INTO Task (id, description, end_date, lesson_id) VALUES (5, 'Rozwiąż ćwiczenia z programowania dynamicznego', '2023-08-23',  1);
 INSERT INTO Task (id, description, end_date, lesson_id) VALUES (6, 'Zaprojektuj interfejs użytkownika dla aplikacji mobilnej', '2024-01-25',  1);
 
-INSERT INTO Task_Student (id, status, task_id, owner_id, filename) VALUES (1, 'OCENIONE', 1, 6, 'rozwiazanie.txt');
-INSERT INTO GRADE (id, category, value, comment, task_owner_id, student_id, lesson_id) VALUES (1, 'Zadanie', 5, 'Wszystko poprawnie rozwiązane!', 1, 3, 1);
+INSERT INTO GRADE (id, category, value, comment, task_owner_id, student_id, lesson_id) VALUES (1, 'Zadanie', 5, 'Wszystko poprawnie rozwiązane!', null, 3, 1);
 INSERT INTO GRADE (id, category, value, comment, task_owner_id, student_id, lesson_id) VALUES (2, 'Odpowiedź ustna', 5, 'Poprawna i składna odpowiedź!', null, 3, 1);
 
 INSERT INTO courses_grades (grade_id, course_id) VALUES(1, 1);
 INSERT INTO courses_grades (grade_id, course_id) VALUES(2, 1);
-
-INSERT INTO Task_Student (id, status, task_id, owner_id, filename) VALUES (2, 'WYKONANE', 2, 6, 'kowalski.zip');
-INSERT INTO Task_Student (id, status, task_id, owner_id, filename) VALUES (3, 'OCENIONE', 3, 6, 'rozwiazanie.pdf');
-INSERT INTO Task_Student (id, status, task_id, owner_id, filename) VALUES (4, 'OCENIONE', 4, 6, 'zadania.pdf');
-INSERT INTO Task_Student (id, status, task_id, owner_id, filename) VALUES (5, 'WYKONANE', 5, 6, 'kowalski2.zip');
-
 

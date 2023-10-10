@@ -22,14 +22,18 @@ public class Lesson {
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
 
-    @OneToMany(mappedBy = "lesson")
+    @OneToMany(mappedBy = "lesson", fetch = FetchType.EAGER)
     @JsonIgnore
     private Set<Grade> grades = new HashSet<>();
+
+    @OneToMany(mappedBy = "lesson", fetch = FetchType.EAGER)
+    @JsonIgnore
+    private Set<Task> tasks = new HashSet<>();
 
     @OneToMany
     private List<CalendarEvent> calendarEvents;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     private List<Material> materials;
 
     @OneToOne(mappedBy = "lesson")
@@ -107,5 +111,13 @@ public class Lesson {
 
     public void setGrades(Set<Grade> grades) {
         this.grades = grades;
+    }
+
+    public Set<Task> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(Set<Task> tasks) {
+        this.tasks = tasks;
     }
 }
