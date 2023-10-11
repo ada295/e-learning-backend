@@ -19,13 +19,13 @@ import java.util.function.Function;
 @Component
 public class JwtTokenUtil implements Serializable {
 
-    public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60;
-
-    Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    public static final long JWT_TOKEN_TIME = 5 * 60 * 60;
 
     public String getEmailFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
     }
+
+    Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
     public Date getExpirationDateFromToken(String token) {
         return getClaimFromToken(token, Claims::getExpiration);
@@ -59,7 +59,7 @@ public class JwtTokenUtil implements Serializable {
 
     private String generateToken(String username, Map<String, Object> claims) {
         return Jwts.builder().setClaims(claims).setSubject(username)
-                .setIssuedAt(new Date(System.currentTimeMillis())).setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
+                .setIssuedAt(new Date(System.currentTimeMillis())).setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_TIME * 1000))
                 .signWith(key).compact();
     }
 

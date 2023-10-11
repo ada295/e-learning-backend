@@ -26,6 +26,7 @@ public class UserAccount {
     private Long id;
     private String firstName;
     private String lastName;
+    @Column(unique = true)
     private String email;
     @JsonIgnore
     private String password;
