@@ -245,6 +245,7 @@ public class CourseController {
         courseResponse.setName(course.getName());
         courseResponse.setAccessCode(course.getAccessCode());
         courseResponse.setFinished(course.isFinished());
+        courseResponse.setOwner(course.getOwner());
         return courseResponse;
     }
 

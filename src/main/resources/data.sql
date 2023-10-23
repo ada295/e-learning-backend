@@ -62,10 +62,10 @@ Insert into Answer (id, content, correct, question_id) values (8,'5',0,2);
 
 Insert into Question (id, content, points, exam_id, question_type) values (3, 'Ile to 6+12?',5,1, 'OPEN');
 
-Insert into Material (id, name, description, type, filename, lesson_id) values (1, 'Materiał 1', 'm1', 'TXT', 'zadania.txt', 1);
-Insert into Material (id, name, description, type, filename, lesson_id) values (2, 'Materiał 2', 'm1', 'PDF', 'zadania.pdf', 1);
-Insert into Material (id, name, description, type, filename, lesson_id) values (3, 'Materiał 3', 'm1', 'TXT', 'zadania.txt', 1);
-Insert into Material (id, name, description, type, filename, lesson_id) values (4, 'Materiał 4', 'm1', 'TXT', 'zadania.txt', 1);
+Insert into Material (id, name, description, type, filename, lesson_id) values (1, 'Materiał 1', '', 'TXT', 'zadania.txt', 1);
+Insert into Material (id, name, description, type, filename, lesson_id) values (2, 'Materiał 2', '', 'PDF', 'zadania.pdf', 1);
+Insert into Material (id, name, description, type, filename, lesson_id) values (3, 'Materiał 3', '', 'TXT', 'zadania.txt', 1);
+Insert into Material (id, name, description, type, filename, lesson_id) values (4, 'Materiał 4', 'Materiały z lekcji', 'TXT', 'zadania.txt', 1);
 
 INSERT INTO Task (id, description, end_date, lesson_id) VALUES (1, 'Wykonaj zadania zamieszczone w materiałach 4, 5, 6', '2023-10-04',  1);
 INSERT INTO Task (id, description, end_date, lesson_id) VALUES (2, 'Przygotuj prezentację na temat historii programowania', '2023-03-05',  1);

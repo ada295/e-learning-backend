@@ -1,10 +1,13 @@
 package com.elearning.app.responses.coursedetails;
 
+import com.elearning.app.user.UserAccount;
+
 public class CourseDetailsCourseResponse {
     private Long id;
     private String name;
     private String description;
     private String accessCode;
+    private UserAccount owner;
     private boolean finished;
 
     public Long getId() {
@@ -45,5 +48,13 @@ public class CourseDetailsCourseResponse {
 
     public void setAccessCode(String accessCode) {
         this.accessCode = accessCode;
+    }
+
+    public UserAccount getOwner() {
+        return owner;
+    }
+
+    public void setOwner(UserAccount owner) {
+        this.owner = owner;
     }
 }
