@@ -42,12 +42,19 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody UserAccountRequest user) {
         Map<String, Object> responseMap = new HashMap<>();
+        UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
+        UserAccount userAccount = userRepository.findByEmail(user.getEmail()).get();
+        if (userAccount.isDisabledAccount()) {
+            responseMap.put("error", true);
+            responseMap.put("message", "Account disabled");
+            return ResponseEntity.status(401).body(responseMap);
+        }
 
         try {
             Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
             if (auth.isAuthenticated()) {
                 logger.info("Logged In");
-                UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
+
                 String token = jwtTokenUtil.generateToken(userDetails);
                 responseMap.put("error", false);
                 responseMap.put("message", "Logged In");
@@ -79,6 +86,11 @@ public class AuthController {
         if (authentication.getAuthorities().stream().noneMatch(e -> e.getAuthority().equals("ADMIN"))) {
             return ResponseEntity.status(403).build();
         }
+
+        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+            return ResponseEntity.status(400).body("Email unique!");
+        }
+
         String password = generatePassword();
         Map<String, Object> responseMap = new HashMap<>();
         user.setPassword(new BCryptPasswordEncoder().encode(password));

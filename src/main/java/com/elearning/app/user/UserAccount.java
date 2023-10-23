@@ -11,7 +11,6 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -26,8 +25,8 @@ public class UserAccount {
     private Long id;
     private String firstName;
     private String lastName;
-    @Column(unique = true)
     private String email;
+    private boolean disabledAccount = false;
     @JsonIgnore
     private String password;
     @ElementCollection(targetClass = UserRole.class, fetch = FetchType.EAGER)

@@ -12,6 +12,7 @@ public class UserAccountRequest {
     private String firstName;
     private String lastName;
     private String email;
+    private boolean disabledAccount;
     private String password;
     private Set<UserRole> roles;
 }

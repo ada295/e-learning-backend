@@ -1,17 +1,17 @@
-INSERT INTO USER_ACCOUNT(id, first_name, last_name, email, password) VALUES (1, 'Nauczyciel', 'Kowalski', 'nauczycielkowalski@mymoodleapp.pl', '$2a$12$l966.69rZuRGr3qOYFRnr.aBiTMy619MyLDMgNGBWsWpcfmMTJ0Ha');
-INSERT INTO USER_ACCOUNT(id, first_name, last_name, email, password) VALUES (2, 'Admin', 'Kowalski', 'adminkowalski@mymoodleapp.pl', '$2a$12$Y7alLBzB.gQ.g..DYdWviOTHevaTx7k2n3eZX8lzQKB5EhDhofScu');
+INSERT INTO USER_ACCOUNT(id, first_name, last_name, email, password, disabled_account) VALUES (1, 'Nauczyciel', 'Kowalski', 'nauczycielkowalski@mymoodleapp.pl', '$2a$12$l966.69rZuRGr3qOYFRnr.aBiTMy619MyLDMgNGBWsWpcfmMTJ0Ha', 0);
+INSERT INTO USER_ACCOUNT(id, first_name, last_name, email, password, disabled_account) VALUES (2, 'Admin', 'Kowalski', 'adminkowalski@mymoodleapp.pl', '$2a$12$Y7alLBzB.gQ.g..DYdWviOTHevaTx7k2n3eZX8lzQKB5EhDhofScu', 0);
 INSERT INTO USER_ROLE(USER_ACCOUNT_ID, ROLE) VALUES (1,'TEACHER');
 INSERT INTO USER_ROLE(USER_ACCOUNT_ID, ROLE) VALUES (2,'ADMIN');
 
-INSERT INTO USER_ACCOUNT (id, first_name, last_name, email, password) VALUES (3, 'Krzysztof', 'Wójcik', 'krzysztof@wojcik.pl', '$2a$12$1z/qXuIP9CkvfviOcQOqIeTSDKeA0SnN36lOdY29QShKig0FnMqYS');
+INSERT INTO USER_ACCOUNT (id, first_name, last_name, email, password, disabled_account) VALUES (3, 'Krzysztof', 'Wójcik', 'krzysztof@wojcik.pl', '$2a$12$1z/qXuIP9CkvfviOcQOqIeTSDKeA0SnN36lOdY29QShKig0FnMqYS', 0);
 INSERT INTO USER_ROLE(USER_ACCOUNT_ID, ROLE) VALUES (3,'STUDENT');
-INSERT INTO USER_ACCOUNT (id, first_name, last_name, email, password) VALUES (4, 'Barbara', 'Kowalczyk', 'barbara@kowalczyk.pl', '$2a$12$bhgVfFoR.5YWttXWAkDiYeHu6S.oGgoxRr0fXizT2rbDSay5mRwMC');
+INSERT INTO USER_ACCOUNT (id, first_name, last_name, email, password, disabled_account) VALUES (4, 'Barbara', 'Kowalczyk', 'barbara@kowalczyk.pl', '$2a$12$bhgVfFoR.5YWttXWAkDiYeHu6S.oGgoxRr0fXizT2rbDSay5mRwMC', 0);
 INSERT INTO USER_ROLE(USER_ACCOUNT_ID, ROLE) VALUES (4,'STUDENT');
-INSERT INTO USER_ACCOUNT (id, first_name, last_name, email, password) VALUES (5, 'Piotr', 'Lewandowski', 'piotr@lewandowski.pl', '$2a$12$FshmGXPf6gZAJq8xveaewOYOmdvzle3g2Xxq2XfE6KLPqWorhPvAO');
+INSERT INTO USER_ACCOUNT (id, first_name, last_name, email, password, disabled_account) VALUES (5, 'Piotr', 'Lewandowski', 'piotr@lewandowski.pl', '$2a$12$FshmGXPf6gZAJq8xveaewOYOmdvzle3g2Xxq2XfE6KLPqWorhPvAO', 0);
 INSERT INTO USER_ROLE(USER_ACCOUNT_ID, ROLE) VALUES (5,'STUDENT');
-INSERT INTO USER_ACCOUNT (id, first_name, last_name, email, password) VALUES (6 ,'Jan','Kowalski','janko@walksi.pl','$2a$12$sRtxw0J.0xgvzZLuYUmGKujkzj/y25YG9Iw94z585xCQf6liTgixi');
+INSERT INTO USER_ACCOUNT (id, first_name, last_name, email, password, disabled_account) VALUES (6 ,'Jan','Kowalski','janko@walksi.pl','$2a$12$sRtxw0J.0xgvzZLuYUmGKujkzj/y25YG9Iw94z585xCQf6liTgixi', 0);
 INSERT INTO USER_ROLE(USER_ACCOUNT_ID, ROLE) VALUES (6,'STUDENT');
-INSERT INTO USER_ACCOUNT (id, first_name, last_name, email, password) VALUES (7, 'Anna', 'Nowak', 'anna@nowak.pl', '$2a$12$7JcVsDkBms70UZ/6icSeNOAuNuOyHjJKv1bkmj7rvVRCVdFl5hREW');
+INSERT INTO USER_ACCOUNT (id, first_name, last_name, email, password, disabled_account) VALUES (7, 'Anna', 'Nowak', 'anna@nowak.pl', '$2a$12$7JcVsDkBms70UZ/6icSeNOAuNuOyHjJKv1bkmj7rvVRCVdFl5hREW', 1);
 INSERT INTO USER_ROLE(USER_ACCOUNT_ID, ROLE) VALUES (7,'STUDENT');
 
 INSERT INTO COURSE(ID, NAME, DESCRIPTION, FINISHED, owner_id, access_code) VALUES(1, 'Fizyka', 'Kurs z fizyki - poziom podstawowy', 0, 1, 'Sa342S@ykU');

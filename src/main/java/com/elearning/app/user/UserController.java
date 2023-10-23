@@ -29,6 +29,7 @@ public class UserController {
         userAccount.setEmail(user.getEmail());
         userAccount.setFirstName(user.getFirstName());
         userAccount.setLastName(user.getLastName());
+        userAccount.setDisabledAccount(user.isDisabledAccount());
 
         if (user.getPassword() != null && !user.getPassword().equals("")) {
             userAccount.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
