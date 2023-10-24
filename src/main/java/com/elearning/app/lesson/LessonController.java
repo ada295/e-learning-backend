@@ -176,6 +176,11 @@ public class LessonController {
             return ResponseEntity.badRequest().body(null);
         }
         Lesson lesson = repository.findById(lessonId).get();
+
+        Course course = lesson.getCourse();
+        if (course.isFinished()) {
+            throw new RuntimeException("Kurs Zakończony!");
+        }
         material.setId(null);
         material.setLesson(lesson);
         material = materialRepository.save(material);
@@ -193,6 +198,10 @@ public class LessonController {
             return ResponseEntity.badRequest().body(null);
         }
         Lesson lesson = repository.findById(lessonId).get();
+        Course course = lesson.getCourse();
+        if (course.isFinished()) {
+            throw new RuntimeException("Kurs Zakończony!");
+        }
         task.setId(null);
         task.setLesson(lesson);
         task = taskRepository.save(task);
@@ -210,6 +219,10 @@ public class LessonController {
             return ResponseEntity.badRequest().body(null);
         }
         Task origTask = taskRepository.findById(id).get();
+        Course course = origTask.getLesson().getCourse();
+        if (course.isFinished()) {
+            throw new RuntimeException("Kurs Zakończony!");
+        }
         origTask.setEndDate(task.getEndDate());
         origTask.setDescription(task.getDescription());
         origTask = taskRepository.save(origTask);
@@ -226,7 +239,11 @@ public class LessonController {
         if (!userAccount.getRoles().contains(UserRole.TEACHER)) {
             return ResponseEntity.badRequest().body(null);
         }
+
         Course course = courseRepository.findById(courseId).get();
+        if (course.isFinished()) {
+            throw new RuntimeException("Kurs Zakończony!");
+        }
         lesson.setId(null);
         lesson.setCourse(course);
         lesson = repository.save(lesson);
@@ -246,6 +263,9 @@ public class LessonController {
         }
 
         Material material = materialRepository.findById(materialId).get();
+        if (material.getLesson().getCourse().isFinished()) {
+            throw new RuntimeException("Kurs Zakończony!");
+        }
         String filename = material.getFilename();
 
         try {
@@ -271,6 +291,9 @@ public class LessonController {
         }
 
         Task task = taskRepository.findById(taskId).get();
+        if (task.getLesson().getCourse().isFinished()) {
+            throw new RuntimeException("Kurs Zakończony!");
+        }
         String filename = file.getOriginalFilename();
         TaskStudent taskStudent = new TaskStudent();
         taskStudent.setFilename(filename);
@@ -302,6 +325,9 @@ public class LessonController {
         UserAccount student = userRepository.findById(studentId).get();
 
         Task task = taskRepository.findById(taskId).get();
+        if (task.getLesson().getCourse().isFinished()) {
+            throw new RuntimeException("Kurs Zakończony!");
+        }
         String filename = file.getOriginalFilename();
 
         try {
@@ -353,10 +379,13 @@ public class LessonController {
             return;
         }
         Task task = taskRepository.findById(taskId).get();
+        if (task.getLesson().getCourse().isFinished()) {
+            throw new RuntimeException("Kurs Zakończony!");
+        }
 
         List<TaskStudent> taskStudents = task.getTaskStudents();
         for (TaskStudent taskStudent : taskStudents) {
-            if(taskStudent.getGrade() != null) {
+            if (taskStudent.getGrade() != null) {
                 Grade grade = taskStudent.getGrade();
                 grade.setTaskStudent(null);
                 grade.getLesson().getGrades().remove(grade);
@@ -373,6 +402,16 @@ public class LessonController {
 
     @DeleteMapping(path = "/materials/{materialId}/delete")
     public void deleteMaterial(@PathVariable Long materialId) {
+        User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserAccount userAccount = userRepository.findByEmail(principal.getUsername()).get();
+        Long studentId = userAccount.getId();
+        if (!userAccount.getRoles().contains(UserRole.TEACHER)) {
+            return;
+        }
+        Optional<Material> byId = materialRepository.findById(materialId);
+        if (byId.get().getLesson().getCourse().isFinished()) {
+            throw new RuntimeException("Kurs Zakończony!");
+        }
         materialRepository.deleteById(materialId);
     }
 
@@ -386,6 +425,10 @@ public class LessonController {
         }
 
         TaskStudent taskStudent = taskStudentRepository.findById(id).get();
+        Course course = taskStudent.getTask().getLesson().getCourse();
+        if (course.isFinished()) {
+            throw new RuntimeException("Kurs Zakończony!");
+        }
         if (taskStudent.getOwner().equals(userAccount)) {
             taskStudentRepository.delete(taskStudent);
             File file = new File("C:\\Users\\user\\Desktop\\Dokumenty\\task_solutions\\" + taskStudent.getTask().getId() + "\\" + studentId + "\\" + taskStudent.getFilename());

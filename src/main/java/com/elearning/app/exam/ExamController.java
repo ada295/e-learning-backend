@@ -142,6 +142,10 @@ public class ExamController {
         exam.setStartDate(request.getStartDate());
         exam.setEndDate(request.getEndDate());
         Optional<Lesson> byId = lessonRepository.findById(lessonId);
+        Course course = byId.get().getCourse();
+        if (course.isFinished()) {
+            throw new RuntimeException("Kurs Zakończony!");
+        }
         exam.setLesson(byId.get());
         exam = repository.save(exam);
         for (AddExamQuestionRequest requestQuestion : request.getQuestions()) {
@@ -167,8 +171,14 @@ public class ExamController {
         if (authentication.getAuthorities().stream().noneMatch(e -> e.getAuthority().equals("TEACHER"))) {
             return;
         }
+        Lesson lesson = lessonRepository.findById(lessonId).get();
 
-        Exam exam = lessonRepository.findById(lessonId).get().getExam();
+        Course course = lesson.getCourse();
+        if (course.isFinished()) {
+            throw new RuntimeException("Kurs Zakończony!");
+        }
+
+        Exam exam = lesson.getExam();
         exam.setName(request.getName());
         exam.setDescription(request.getDescription());
         exam.setStartDate(request.getStartDate());
@@ -204,6 +214,14 @@ public class ExamController {
         }
 
         ExamResult examResult = examResultRepository.findById(examResultId).get();
+
+        Lesson lesson = examResult.getExam().getLesson();
+
+        Course course = lesson.getCourse();
+        if (course.isFinished()) {
+            throw new RuntimeException("Kurs Zakończony!");
+        }
+
         examResult.getStudentAnswers().stream().filter(e -> e.getQuestion().getQuestionType() == QuestionType.OPEN)
                 .filter(e -> e.getOpenQuestionAnswerPoints() == null)
                 .forEach(e -> e.setOpenQuestionAnswerPoints(0.0));
@@ -274,6 +292,13 @@ public class ExamController {
 
         ExamResult examResult = new ExamResult();
         Exam exam = lessonRepository.findById(id).get().getExam();
+
+        Lesson lesson = exam.getLesson();
+
+        Course course = lesson.getCourse();
+        if (course.isFinished()) {
+            throw new RuntimeException("Kurs Zakończony!");
+        }
 
         if(exam.getEndDate().isBefore(LocalDateTime.now())
                 || exam.getStartDate().isAfter(LocalDateTime.now())) {

@@ -276,6 +276,34 @@ public class CourseController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
+    @PutMapping("/courses/{id}/enable")
+    public ResponseEntity enableCourse(@PathVariable Long id) {
+        UserAccount loggedUser = getUserAccount();
+        if (!loggedUser.getRoles().contains(UserRole.TEACHER)) {
+            throw new RuntimeException("Not teacher");
+        }
+
+        Course course = courseRepository.findById(id).get();
+        course.setFinished(false);
+        courseRepository.save(course);
+
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @PutMapping("/courses/{id}/disable")
+    public ResponseEntity disable(@PathVariable Long id) {
+        UserAccount loggedUser = getUserAccount();
+        if (!loggedUser.getRoles().contains(UserRole.TEACHER)) {
+            throw new RuntimeException("Not teacher");
+        }
+
+        Course course = courseRepository.findById(id).get();
+        course.setFinished(true);
+        courseRepository.save(course);
+
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
 
     @PostMapping(path = "/courses/{courseId}/announcements")
     public ResponseEntity<Announcement> saveAnnouncements(@PathVariable Long courseId, @RequestBody Announcement announcement)
@@ -285,6 +313,9 @@ public class CourseController {
             throw new RuntimeException("Not teacher");
         }
         Course course = courseRepository.findById(courseId).get();
+        if (course.isFinished()) {
+            throw new RuntimeException("Kurs Zakończony!");
+        }
         announcement.setId(null);
         announcement.setDate(LocalDate.now(ZoneId.systemDefault()));
         announcement.setCourse(course);
@@ -302,6 +333,9 @@ public class CourseController {
             throw new RuntimeException("Not teacher");
         }
         Course course = courseRepository.findById(courseId).get();
+        if (course.isFinished()) {
+            throw new RuntimeException("Kurs Zakończony!");
+        }
         Announcement announcement = announcementRepository.findById(announcementId).get();
         course.getAnnouncements().remove(announcement);
         announcementRepository.delete(announcement);
@@ -317,6 +351,9 @@ public class CourseController {
             throw new RuntimeException("Not teacher");
         }
         Course course = courseRepository.findById(id).get();
+        if (course.isFinished()) {
+            throw new RuntimeException("Kurs Zakończony!");
+        }
         course.setAccessCode(generateCourseCode());
         courseRepository.save(course);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -346,6 +383,9 @@ public class CourseController {
         }
         UserAccount userAccount = getUserAccount();
         Course course = courseRepository.findByAccessCode(code).get();
+        if (course.isFinished()) {
+            throw new RuntimeException("Kurs Zakończony!");
+        }
         Set<UserAccount> students = course.getStudents();
         students.add(userAccount);
         userAccount.getCoursesAsStudent().add(course);
