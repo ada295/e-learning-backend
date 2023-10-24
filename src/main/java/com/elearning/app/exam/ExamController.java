@@ -124,6 +124,7 @@ public class ExamController {
         ExamDetailsExamResponse examResponse = new ExamDetailsExamResponse();
         examResponse.setId(exam.getId());
         examResponse.setName(exam.getName());
+        examResponse.setDescription(exam.getDescription());
         examResponse.setStartDate(exam.getStartDate());
         examResponse.setEndDate(exam.getEndDate());
         return examResponse;
@@ -158,6 +159,21 @@ public class ExamController {
                 answerRepository.save(answer);
             }
         }
+    }
+
+    @PutMapping("/lesson/{lessonId}/exam")
+    public void editExam(@PathVariable Long lessonId, @RequestBody AddExamRequest request) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.getAuthorities().stream().noneMatch(e -> e.getAuthority().equals("TEACHER"))) {
+            return;
+        }
+
+        Exam exam = lessonRepository.findById(lessonId).get().getExam();
+        exam.setName(request.getName());
+        exam.setDescription(request.getDescription());
+        exam.setStartDate(request.getStartDate());
+        exam.setEndDate(request.getEndDate());
+        exam = repository.save(exam);
     }
 
     @PostMapping("/exam-result/{examResultId}/question/{questionId}")
@@ -317,6 +333,7 @@ public class ExamController {
 
     private ExamResultResponse buildExamResultResponse(ExamResult saved) {
         ExamResultResponse examResultResponse = new ExamResultResponse();
+        examResultResponse.setDescription(saved.getExam().getDescription());
         examResultResponse.setExamResultId(saved.getId());
         examResultResponse.setLessonId(saved.getExam().getLesson().getId());
         examResultResponse.setExam(saved.getExam());

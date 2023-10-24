@@ -19,5 +19,6 @@ public class ExamResultResponse {
     private Double points;
     private Double maxPoints;
     private String status;
+    private String description;
     private CourseDetailsCourseResponse course;
 }

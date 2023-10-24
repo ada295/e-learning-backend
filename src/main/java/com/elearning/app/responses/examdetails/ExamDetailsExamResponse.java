@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 public class ExamDetailsExamResponse {
     private Long id;
     private String name;
+    private String description;
     private Integer maxMinutes;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
